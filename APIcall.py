@@ -1,17 +1,20 @@
-from PROG import JJProg
 import time
 import hashlib
 import requests
 import json
-
+import random
 
 
 
 
 def charIDtest():
 	"string argument"
+	loops = 0
 	while True:
-		charID = JJProg.randomID()
+		loops += 1
+		print(loops)
+		charID = random.randint(1009146, 1015035)
+		print(charID)
 
 		timestamp = str(time.time())
 		private_key = "c00f2975204127a291d19b4fc3d5b4978f18356f"  # niet veranderen
@@ -30,11 +33,22 @@ def charIDtest():
 		# om de JSON leesbaar te printen...
 		# print(json.dumps(jsontext, sort_keys=True, indent=4))
 
-		if jsontext['data']['results']
+		try:
+			print(jsontext['data']['results'][0]['description'])
+			print(jsontext['data']['results'][0]['name'])
 
-charIDtest()
+			if jsontext['data']['results'][0]['description'] == "":
+				continue
+			else:
+				break
+		except KeyError:
+			continue
+	return jsontext
 
 
+informatie = (charIDtest())
+
+print(informatie['data']['results'][0]['name'])
 
 
 
