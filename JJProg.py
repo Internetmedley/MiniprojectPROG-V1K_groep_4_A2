@@ -1,4 +1,6 @@
-superhelden = ('iron man')
+from MiniprojectPROG import APIcall
+superhelden = APIcall.apicallcharID("1009610")
+'superhelden naam in lowercase'
 # while True:
 #     import random
 #     ID = print(random.randint(1009146, 1015035))
@@ -12,8 +14,9 @@ superhelden = ('iron man')
 def punten_telling():
     punten = 25
     while True:
-        guess = input('welke superheld?: ')
-        if superhelden == guess:
+        guess = str(input('welke superheld?: '))
+        guess.lower()
+        if guess == superhelden:
             print('je hebt goed geraden! je hebt nog ' + str(punten) + ' punten over')
             return False
         if guess != superhelden:
