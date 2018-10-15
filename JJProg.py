@@ -1,14 +1,11 @@
-from MiniprojectPROG import APIcall
+from PROG import APIcall
 superhelden = APIcall.apicallcharID("1009610")
 'superhelden naam in lowercase'
-# while True:
-#     import random
-#     ID = print(random.randint(1009146, 1015035))
-#     # random.rantint is tot en met
-#     if len(superhelden) > 1:
-#         continue
-#     else:
-#         break
+
+def randomID():
+    import random
+    ID = random.randint(1009146, 1015035)                       # random.rantint is tot en met
+    return ID
 
 
 def punten_telling():
