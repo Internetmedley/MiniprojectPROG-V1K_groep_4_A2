@@ -5,16 +5,23 @@ import json
 import random
 
 
-
-
-def charIDtest():
-	"string argument"
+def ID_test():
+	"geen arugment!!!"
 	loops = 0
+
 	while True:
 		loops += 1
 		print(loops)
+		infile = open('nonexistentcharIDs.txt', 'r+')
+		lines = infile.readlines()
+		infile.close()
+
 		charID = random.randint(1009146, 1015035)
+		if str(charID) + '\n' in lines or str(charID) in lines:
+			print("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY")
+			continue
 		print(charID)
+
 
 		timestamp = str(time.time())
 		private_key = "c00f2975204127a291d19b4fc3d5b4978f18356f"  # niet veranderen
@@ -34,27 +41,38 @@ def charIDtest():
 		# print(json.dumps(jsontext, sort_keys=True, indent=4))
 
 		try:
-			print(jsontext['data']['results'][0]['description'])
-			print(jsontext['data']['results'][0]['name'])
+			jsontext['data']['results'][0]['description']
 
 			if jsontext['data']['results'][0]['description'] == "":
+				infile = open('nonexistentcharIDs.txt', 'a')
+				infile.write(str(charID) + '\n')
+				infile.close()
 				continue
 			else:
 				break
 		except KeyError:
+			infile = open('nonexistentcharIDs.txt', 'a')
+			infile.write(str(charID) + '\n')
+			infile.close()
 			continue
 	return jsontext
 
+def hero_description(info):
+	"variabele informatie als argument en haalt naam uit de description"
+	return info['data']['results'][0]['description'].replace(info['data']['results'][0]['name'], '*')
 
-informatie = (charIDtest())
-
-print(informatie['data']['results'][0]['name'])
-
-
+def hero_name(info):
+	"variabele informatie als argument"
+	return info['data']['results'][0]['name']
 
 
-# print("\nGevonden characters in series:")
-# # JSON-indeling kun je uit het geprinte resultaat halen of uit de Marvel docs!
-# for item in jsontext['data']['results'][0]['series']['items']:
-# 	print(item['name'])
+
+informatie = ID_test()
+print(hero_name(informatie))
+print(hero_description(informatie))
+
+# print(json.dumps(informatie, sort_keys=True, indent=4))
+
+
+
 
