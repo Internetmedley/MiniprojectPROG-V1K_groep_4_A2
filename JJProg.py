@@ -1,21 +1,15 @@
-from MiniprojectPROG import APIcall
-superhelden = APIcall.charIDtest()
-'superhelden naam in lowercase'
-
-
-def randomID():
-    import random
-    ID = random.randint(1009146, 1015035)                       # random.rantint is tot en met
-    return ID
+from PROG import APIcall
+superhelden=APIcall.charIDtest()
 
 
 def punten_telling(superhelden):
-    superheld = str(superhelden)
-    superheld=superheld.lower()
+    CapsSuperhelden=superhelden
+    superhelden = superhelden.lower()
     punten = 25
     GeenPuntenKeerEen=0
     while True:
-        guess = input('Raad de superheld: ')
+        guess = input('Raad de superhelden: ')
+        guess=guess.lower()
         if superhelden == guess:
             print('Je hebt goed geraden! je hebt nog {} punten over!\nBedankt voor het spelen :D!'.format(str(punten)))
             return False
@@ -42,9 +36,7 @@ def punten_telling(superhelden):
                     GeenPuntenKeerEen=1
             else:
                 print("Helaas heb je verloren omdat je geen punten meer over hebt.\nBedankt voor het spelen.")
-                print("De superheld was {}.".format(superhelden))
+                print("De superheld was {}.".format(CapsSuperhelden))
                 break
 
 punten_telling(superhelden)
-
-punten_telling()
