@@ -3,7 +3,7 @@ import json
 # invoerNaam =  input("Name: ")
 # score = 20
 
-def high_score_add(score):
+def high_score_check(score):
     "checkt of de high-score hoog genoeg is en dan voegt ie hem toe"
     with open('hi-scores.json', 'r') as f:
         data = json.load(f)
@@ -51,6 +51,6 @@ def high_score_print():
 
 
 
-high_score_add(10)
+high_score_check(22)
 high_score_print()
 #kan niet zelfde key als eentje die al bestaat

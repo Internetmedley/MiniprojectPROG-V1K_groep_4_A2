@@ -59,7 +59,7 @@ def ID_test():
 
 def hero_description(info):
 	"variabele informatie als argument en haalt naam uit de description"
-	return info['data']['results'][0]['description'].replace(info['data']['results'][0]['name'], '*')
+	return info['data']['results'][0]['description'].replace(info['data']['results'][0]['name'], '*****')
 
 def hero_name(info):
 	"variabele informatie als argument"
@@ -68,6 +68,9 @@ def hero_name(info):
 
 
 informatie = ID_test()
+with open('informatie.json', 'w') as f:
+    json.dump(informatie, f)
+
 print(hero_name(informatie))
 print(hero_description(informatie))
 
