@@ -1,31 +1,29 @@
 import json
 
-# invoerNaam =  input("Name: ")
-# score = 20
 
 def high_score_check(score):
     "checkt of de high-score hoog genoeg is en dan voegt ie hem toe"
     with open('hi-scores.json', 'r') as f:
         data = json.load(f)
 
-    if score > min(data.values()):
+    if score > min(data.values()):                                              #checkt score hoog genoeg is
         while True:
             userName = input("Kies een gebruikersnaam(max. 14 characters): ")
             if len(userName) > 14:
                 print("Uw gebruikersnaam is te lang. Probeer het nog eens.")
                 continue
-            elif userName in data.keys():
+            elif userName in data.keys():                                       #anders fuckt het met de dictionary en values
                 print("Uw gebruikersnaam is al in gebruik. Kies een andere.")
                 continue
-            else:
+            else:           #als alle systemen nominaal zijn(goed dus)
                 data.update({userName : score})
                 break
     else:
         print("Uw score is niet hoog genoeg om in de rankings te komen.")
 
 
-    lijstKeys = (sorted(data, key=data.__getitem__, reverse=True))
-    lijstValues = (sorted(data.values(), reverse=True))
+    lijstKeys = (sorted(data, key=data.__getitem__, reverse=True))              #maakt lijst van keys van reverse gesorteerde values
+    lijstValues = (sorted(data.values(), reverse=True))                         #maakt lijst van reverse gesorteerde values
 
     data.clear()
     for i in range(0, 10):
@@ -40,6 +38,7 @@ def high_score_check(score):
 
 
 def high_score_print():
+    "print de high-scorelijst"
     with open('hi-scores.json', 'r') as f:
         data = json.load(f)
 
@@ -50,7 +49,6 @@ def high_score_print():
     return print(hiscore)
 
 
-
-high_score_check(22)
-high_score_print()
+# high_score_check(30)
+# high_score_print()
 #kan niet zelfde key als eentje die al bestaat
