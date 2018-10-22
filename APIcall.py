@@ -94,6 +94,11 @@ def	eerste_letter(info):
 	naam = info['data']['results'][0]['name']
 	return naam[0]
 
+def hero_comics(info):
+	":returns de eerste letter van naam"
+	naam = info['data']['results'][0]['name']
+	return naam[0]
+
 
 # informatie = ID_test()
 # print(hero_description(informatie))

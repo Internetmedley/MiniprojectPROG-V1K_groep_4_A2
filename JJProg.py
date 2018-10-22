@@ -1,54 +1,62 @@
-from PROG import APIcall
-from PROG import scoredisplay
+import APIcall
+import Hints
 
+informatie = APIcall.ID_test()
+superhelden=APIcall.hero_name(informatie)
+nummer_lijst= [1, 2, 3, 4]
 
-# informatie = APIcall.ID_test()
-# superhelden = APIcall.hero_name(informatie)
-
-
-def punten_telling():
+def punten_telling(superhelden, nummer_lijst):
+    CapsSuperhelden=superhelden
+    superhelden = superhelden.lower()
+    punten = 25
+    GeenPuntenKeerEen=0
     while True:
-        informatie = APIcall.ID_test()
-        superhelden = APIcall.hero_name(informatie)
-
-        CapsSuperhelden = superhelden
-        superhelden = superhelden.lower()
-        punten = 25
-        GeenPuntenKeerEen = 0
-        scoredisplay.high_score_print()
-        while True:
-            guess = input('Raad de superhelden: ')
-            guess = guess.lower()
-            if superhelden == guess:
-                print('Je hebt goed geraden! je hebt nog {} punten over!\nBedankt voor het spelen :D!'.format(
-                    str(punten)))
-                break
-            if guess != superhelden:
-                print('Je hebt het fout\nProbeer het opnieuw!')
-                punten -= 1
-                print("Je hebt: {} punten".format(str(punten)))
-                if punten > 0:
-                    if punten > 3:
-                        while True:
-                            hint = input('Wil je een hint? ja/nee (kost 3 punten)?: ')
-                            LowerHint = hint.lower()
+        guess = input('Raad de character: ')
+        guess=guess.lower()
+        if superhelden == guess:
+            print('Je hebt goed geraden! je hebt nog {} punten over!\nBedankt voor het spelen :D!'.format(str(punten)))
+            return False
+        if guess != superhelden:
+            print('Je hebt het fout\nProbeer het opnieuw!')
+            punten -= 1
+            print("Je hebt: {} punten".format(str(punten)))
+            if punten>0:
+                if punten>3:
+                    while True:
+                        hint = input('Wil je een hint? ja/nee (kost 3 punten)?: ')
+                        try:
+                            LowerHint=hint.lower()
                             if LowerHint == ('ja'):
                                 punten -= 3
                                 print("Je hebt: {} punten".format(str(punten)))
-                                print('hint!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-                                break
+                                Hints.hint_keuze(nummer_lijst)
+                                while True:
+                                    hint=input("Wilt u nog een hint aanvragen? ja/nee (kost 3 punten): ")
+                                    try:
+                                        LowerHint = hint.lower()
+                                        if LowerHint == 'ja':
+                                            punten -= 3
+                                            print("Je hebt: {} punten".format(str(punten)))
+                                            Hints.hint_keuze(nummer_lijst)
+                                            break
+                                        elif LowerHint == 'nee':
+                                            break
+                                    except:
+                                        print("Vul ja/nee in!")
+                                        continue
                             elif LowerHint == ('nee'):
                                 break
-                            else:
-                                print('voer ja of nee in!')
-                    elif GeenPuntenKeerEen < 1:
-                        print("Je hebt niet genoeg punten om een hint aan te vragen.")
-                        GeenPuntenKeerEen = 1
-                else:
-                    print("Helaas heb je verloren omdat je geen punten meer over hebt.\nBedankt voor het spelen.")
-                    print("De superheld was {}.".format(CapsSuperhelden))
-                    break
-        scoredisplay.high_score_check(punten)
-        scoredisplay.high_score_print()
+                        except:
+                            print("Vul ja/nee in!")
+                            continue
+                        else:
+                            print('voer ja of nee in!')
+                elif GeenPuntenKeerEen<1:
+                    print("Je hebt niet genoeg punten om een hint aan te vragen.")
+                    GeenPuntenKeerEen=1
+            else:
+                print("Helaas heb je verloren omdat je geen punten meer over hebt.\nBedankt voor het spelen.")
+                print("Het character was {}.".format(CapsSuperhelden))
+                break
 
-punten_telling()
+punten_telling(superhelden)
