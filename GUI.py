@@ -59,17 +59,16 @@ howToPlayScreen = Frame(master=root, bg="black")
 howToPlayScreen.pack(fill=BOTH, expand=True)
 backButtonHowTo = Button(master=howToPlayScreen, text='Back', command=buildStartScreen)
 text = Text(howToPlayScreen, bg="black", fg="white")
-text.insert(INSERT, "Waneer je het spell start krijg je 25 punten. \n"
-                    "Je hebt 2 keuzes: je kan een hint kopen en je kan een guess doen. \n"
-                    "Je moet raden welke marvel character het is met behulp van hints te kopen. \n"
-                    "Wanneer je een hint koopt verlies je 3 punten. \n"
-                    "Er zijn 5 verschillende hints: \n"
-                    "1 description, geeft een zin over de character. \n"
-                    "2 je krijgt de eerste letters te zien van de naam. \n"
-                    "3 je krijgt te zien in welke marvel commics de character heeft gezeten. \n"
-                    "4 je krijgt te zien hoevel letters in de naam zit. \n"
-                    "5 je krijgt een plaatje te zien van de character. \n"
-                    "Bij een verkeerde Guess verlies je 1 punt \n")
+text.insert(INSERT,  "When you start to play the game you get 25 points. \n"
+                    "You have 2 choices: You can either buy a hint or you can guess the character. \n"
+                    "The goal of the game is that you guess the marvel Character with the help of tips that you can buy. \n"
+                    "If you buy a hint, you loose 3 points. \n"
+                    "There are 4 different hints you can choose from. \n"
+                    "Tip 1 : You get a small description about the character. \n"
+                    "tip 2 : You get the 1st letter of the name of the character. \n"
+                    "tip 3 : You get to see the marvel comics the character has played in. \n"
+                    "tip 4 : You get to see how many characters there are in the name of the character. \n"
+                    "If you guess the character wrong, you loose 1 point. \n")
 text.pack()
 backButtonHowTo.pack(side=BOTTOM, pady=20)
 
@@ -83,10 +82,11 @@ mainGame.pack(fill=BOTH, expand=True)
 enterSuperHero = Entry(master=mainGame)
 enterSuperHero.place(relx=0.5, rely=0.5)
 labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A SUPERHERO:")
-labelEntryInput.place(relx=0.3, rely=0.5)
-labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"],
-                                                                      hintDisplayDict["3"], hintDisplayDict["4"]))
+labelEntryInput.place(relx=0.28, rely=0.5)
+labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"],                                                                      hintDisplayDict["3"], hintDisplayDict["4"]))
 labelHints.pack(side=TOP, pady=10, padx=0)
+guessButton = Button(master=mainGame, text="GUESS", command=print("CHECK TEGEN API CALL LINE 88"))
+guessButton.pack()
 
 root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
 buildStartScreen()
