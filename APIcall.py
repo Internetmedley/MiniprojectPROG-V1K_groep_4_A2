@@ -5,16 +5,23 @@ import json
 import random
 
 
-
-
-def charIDtest():
-	"string argument"
+def ID_test():
+	"geen arugment!!!"
 	loops = 0
+
 	while True:
 		loops += 1
 		print(loops)
+		infile = open('nonexistentcharIDs.txt', 'r+')
+		lines = infile.readlines()
+		infile.close()
+
 		charID = random.randint(1009146, 1015035)
-		print(charID)
+		if str(charID) + '\n' in lines or str(charID) in lines:
+			# print("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY")
+			continue
+		# print(charID)
+
 
 		timestamp = str(time.time())
 		private_key = "c00f2975204127a291d19b4fc3d5b4978f18356f"  # niet veranderen
@@ -25,7 +32,7 @@ def charIDtest():
 
 		url = "https://gateway.marvel.com:443/v1/public/characters/{}".format(charID)
 		connection_url = url + "?ts=" + timestamp + "&apikey=" + public_key + "&hash=" + md5digest
-		print(connection_url)
+		#print(connection_url)
 
 		response = requests.get(connection_url)
 		jsontext = json.loads(response.text)
@@ -34,27 +41,74 @@ def charIDtest():
 		# print(json.dumps(jsontext, sort_keys=True, indent=4))
 
 		try:
-			print(jsontext['data']['results'][0]['description'])
-			print(jsontext['data']['results'][0]['name'])
-
+			jsontext['data']['results'][0]['description']
+			
 			if jsontext['data']['results'][0]['description'] == "":
+				infile = open('nonexistentcharIDs.txt', 'a')
+				infile.write(str(charID) + '\n')
+				infile.close()
 				continue
 			else:
 				break
 		except KeyError:
+			infile = open('nonexistentcharIDs.txt', 'a')
+			infile.write(str(charID) + '\n')
+			infile.close()
 			continue
+			
+	with open('informatie.json', 'w') as f:
+		json.dump(jsontext, f)
+		
 	return jsontext
 
 
-informatie = (charIDtest())
+def hero_name(info):
+	"variabele informatie als argument"
+	naam = info['data']['results'][0]['name']
+	if '(' in naam:
+		return naam.replace(naam[naam.index('(') -1:], '')
+	else:
+		return naam
 
-print(informatie['data']['results'][0]['name'])
+def	hero_letters(info):
+	"returnt de hint hoeveel letters de naam bevat"
+	naam = info['data']['results'][0]['name']
+	if '(' in naam:
+		naam = naam.replace(naam[naam.index('(') -1:], '')
+		hint = 'De naam bevat {} letters.'.format(len(naam))
+		return hint
+	else:
+		hint = 'De naam bevat {} letters.'.format(len(naam	))
+		return hint
+
+def hero_description(info):
+	"variabele informatie als argument en haalt naam uit de description"
+	naam = info['data']['results'][0]['name']
+	if '(' in naam:
+		naam = naam.replace(naam[naam.index('(') - 1:], '')
+	hint = info['data']['results'][0]['description'].replace(naam, '*****')
+	return hint
+
+def	eerste_letter(info):
+	":returns de eerste letter van naam"
+	naam = info['data']['results'][0]['name']
+	return naam[0]
+
+def hero_comics(info):
+	":returns de eerste letter van naam"
+	naam = info['data']['results'][0]['name']
+	return naam[0]
+
+
+# informatie = ID_test()
+# print(hero_description(informatie))
+# print(hero_letters(informatie))
+# print(eerste_letter(informatie))
 
 
 
+# print(json.dumps(informatie, sort_keys=True, indent=4))
 
-# print("\nGevonden characters in series:")
-# # JSON-indeling kun je uit het geprinte resultaat halen of uit de Marvel docs!
-# for item in jsontext['data']['results'][0]['series']['items']:
-# 	print(item['name'])
+
+
 
