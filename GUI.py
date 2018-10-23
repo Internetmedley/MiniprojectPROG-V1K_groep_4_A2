@@ -2,10 +2,9 @@ from tkinter import *
 from tkinter.messagebox import showinfo
 
 
-# def mouseOverHandelEvent(self,Event):
-#     bericht="deze shit werkt"
-#     showinfo(title="popup", message=bericht)
-
+def guessButtonClicked():
+    labelGuessAwnser["text"] = enterSuperHero.get()
+    print("Check tegen API CALL LINE 88")
 
 def buildStartScreen():
     howToPlayScreen.pack_forget()
@@ -85,8 +84,10 @@ labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A S
 labelEntryInput.place(relx=0.28, rely=0.5)
 labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"],                                                                      hintDisplayDict["3"], hintDisplayDict["4"]))
 labelHints.pack(side=TOP, pady=10, padx=0)
-guessButton = Button(master=mainGame, text="GUESS", command=print("CHECK TEGEN API CALL LINE 88"))
+labelGuessAwnser = Label(master=mainGame, text="", fg="white", bg="black")
+guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked)
 guessButton.pack()
+labelGuessAwnser.pack()
 
 root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
 buildStartScreen()
