@@ -3,9 +3,8 @@ import Hints
 
 informatie = APIcall.ID_test()
 superhelden=APIcall.hero_name(informatie)
-nummer_lijst= [1, 2, 3, 4]
 
-def punten_telling(superhelden, nummer_lijst):
+def punten_telling(superhelden):
     CapsSuperhelden=superhelden
     superhelden = superhelden.lower()
     punten = 25
@@ -29,7 +28,7 @@ def punten_telling(superhelden, nummer_lijst):
                             if LowerHint == ('ja'):
                                 punten -= 3
                                 print("Je hebt: {} punten".format(str(punten)))
-                                Hints.hint_keuze(nummer_lijst)
+                                Hints.hint_keuze()
                                 while True:
                                     hint=input("Wilt u nog een hint aanvragen? ja/nee (kost 3 punten): ")
                                     try:
@@ -37,7 +36,7 @@ def punten_telling(superhelden, nummer_lijst):
                                         if LowerHint == 'ja':
                                             punten -= 3
                                             print("Je hebt: {} punten".format(str(punten)))
-                                            Hints.hint_keuze(nummer_lijst)
+                                            Hints.hint_keuze()
                                             break
                                         elif LowerHint == 'nee':
                                             break

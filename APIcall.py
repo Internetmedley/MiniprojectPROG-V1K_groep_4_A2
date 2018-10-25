@@ -58,46 +58,59 @@ def ID_test():
 			
 	with open('informatie.json', 'w') as f:
 		json.dump(jsontext, f)
-		
-	return jsontext
+	return
 
 
-def hero_name(info):
+def hero_name():
 	"variabele informatie als argument"
-	naam = info['data']['results'][0]['name']
-	if '(' in naam:
-		return naam.replace(naam[naam.index('(') -1:], '')
-	else:
-		return naam
+	with open('informatie.json', 'r') as f:
+		info = json.load(f)
+		naam = info['data']['results'][0]['name']
+		if '(' in naam:
+			return naam.replace(naam[naam.index('(') -1:], '')
+		else:
+			return naam
 
-def	hero_letters(info):
+def	hero_letters():
 	"returnt de hint hoeveel letters de naam bevat"
-	naam = info['data']['results'][0]['name']
-	if '(' in naam:
-		naam = naam.replace(naam[naam.index('(') -1:], '')
-		hint = 'De naam bevat {} letters.'.format(len(naam))
-		return hint
-	else:
-		hint = 'De naam bevat {} letters.'.format(len(naam	))
-		return hint
+	with open('informatie.json', 'r') as f:
+		info = json.load(f)
+		naam = info['data']['results'][0]['name']
+		if '(' in naam:
+			naam = naam.replace(naam[naam.index('(') -1:], '')
+			hint = 'De naam bevat {} letters.'.format(len(naam))
+			return hint
+		else:
+			hint = 'De naam bevat {} letters.'.format(len(naam	))
+			return hint
 
-def hero_description(info):
+def hero_description():
 	"variabele informatie als argument en haalt naam uit de description"
-	naam = info['data']['results'][0]['name']
-	if '(' in naam:
-		naam = naam.replace(naam[naam.index('(') - 1:], '')
-	hint = info['data']['results'][0]['description'].replace(naam, '*****')
-	return hint
+	with open('informatie.json', 'r') as f:
+		info = json.load(f)
+		naam = info['data']['results'][0]['name']
+		if '(' in naam:
+			naam = naam.replace(naam[naam.index('(') - 1:], '')
+		hint = info['data']['results'][0]['description'].replace(naam, '*****')
+		return hint
 
-def	eerste_letter(info):
+def	eerste_letter():
 	":returns de eerste letter van naam"
-	naam = info['data']['results'][0]['name']
-	return naam[0]
+	with open('informatie.json', 'r') as f:
+		info = json.load(f)
+		naam = info['data']['results'][0]['name']
+		return naam[0]
 
-def hero_comics(info):
+def hero_comics():
 	":returns de eerste letter van naam"
-	naam = info['data']['results'][0]['name']
-	return naam[0]
+	with open('informatie.json', 'r') as f:
+		info = json.load(f)
+		naam = info['data']['results'][0]['name']
+		return naam[0]
+
+
+
+
 
 
 # informatie = ID_test()

@@ -1,10 +1,21 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
-
+from PROG import APIcall
 
 # def mouseOverHandelEvent(self,Event):
 #     bericht="deze shit werkt"
 #     showinfo(title="popup", message=bericht)
+
+score = 25
+
+def guessButtonClicked():
+    global score
+    if enterSuperHero.get().lower() == APIcall.hero_name().lower():
+        guessButtonAnswer["text"] = "U heeft het goed geraden!"
+    else:
+        guessButtonAnswer["text"] = "U heeft het fout geraden!"
+        score -= 1
+        scoreLabel["text"] = "SCORE: {}".format(score)
 
 
 def buildStartScreen():
@@ -43,7 +54,7 @@ root.geometry("600x600")
 #Build startscreen and atributes
 startScreen = Frame(master=root, bg="black")
 startScreen.pack(fill=BOTH, expand=True)
-playButton = Button(master=startScreen, text="PLAY", command=mainGameWindow, height=2, width=40, cursor="hand2")
+playButton = Button(master=startScreen, text="PLAY", command=lambda:[mainGameWindow(), APIcall.ID_test()], height=2, width=40, cursor="hand2")
 quitButton = Button(master=startScreen, text="QUIT", command=root.quit, height=2, width=40, cursor="hand2")
 quitButton.pack(side=BOTTOM, pady=10)
 playButton.pack(side=BOTTOM, pady=20)
@@ -80,15 +91,20 @@ hintDisplayDict = {'1': "Press 1 description of the character.",
 mainGame = Frame(master=root, bg="black")
 mainGame.pack(fill=BOTH, expand=True)
 enterSuperHero = Entry(master=mainGame)
-enterSuperHero.place(relx=0.5, rely=0.5)
+enterSuperHero.place(relx=0.5, rely=0.5, anchor=W)
 labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A SUPERHERO:")
-labelEntryInput.place(relx=0.28, rely=0.5)
-labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"],                                                                      hintDisplayDict["3"], hintDisplayDict["4"]))
+labelEntryInput.place(relx=0.5, rely=0.5, anchor=E)
+labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"], hintDisplayDict["3"], hintDisplayDict["4"]))
+scoreLabel = Label(master=mainGame, bg="black", fg="white", text = "SCORE: 25")
+guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked)
+guessButtonAnswer = Label(master=mainGame, text='', bg="black", fg="white")
+scoreLabel.place(relx=1.0, rely=0.0, anchor=NE)
 labelHints.pack(side=TOP, pady=10, padx=0)
-guessButton = Button(master=mainGame, text="GUESS", command=print("CHECK TEGEN API CALL LINE 88"))
 guessButton.pack()
+guessButtonAnswer.pack()
 
-root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
+
+# root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
 buildStartScreen()
 
 # Drop down menu op begin scherm

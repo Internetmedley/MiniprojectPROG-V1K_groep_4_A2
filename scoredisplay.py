@@ -8,9 +8,12 @@ def high_score_check(score):
 
     if score > min(data.values()):                                              #checkt score hoog genoeg is
         while True:
-            userName = input("Kies een gebruikersnaam(max. 14 characters): ")
+            userName = input("Kies een gebruikersnaam(min. 2, max 14): ")
             if len(userName) > 14:
                 print("Uw gebruikersnaam is te lang. Probeer het nog eens.")
+                continue
+            elif len(userName) < 2:
+                print("Uw gebruikersnaam is te kort. Probeer het nog eens.")
                 continue
             elif userName in data.keys():                                       #anders fuckt het met de dictionary en values
                 print("Uw gebruikersnaam is al in gebruik. Kies een andere.")
@@ -46,7 +49,7 @@ def high_score_print():
     for key, value in data.items():
         hiscore += ("{:14}\t\t{:2}\n".format(key, value))
 
-    return print(hiscore)
+    return hiscore
 
 
 # high_score_check(30)
