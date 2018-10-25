@@ -1,7 +1,15 @@
-from tkinter import *
+#region Imports
+
 import APIcall
 import scoredisplay
 import os
+from tkinter import *
+from PIL import Image, ImageTk
+from urllib.request import urlopen
+from io import BytesIO
+import base64
+
+#endregion
 
 # region Globals
 score = 25
@@ -10,11 +18,15 @@ score = 25
 
 # region Buttons
 
+
 def restartButton():
-    superHeroGame = sys.executable()
+    """Restarts the whole game so everything gets ressted"""
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
 
 def hintButton1():
+    """Prints the first hint on click"""
     global score
     textGuessAnswer.insert(END, APIcall.hero_description() + '\n--------------------------------------------------\n')
     hint1Button.destroy()
@@ -22,6 +34,7 @@ def hintButton1():
     scoreLabel["text"] = "SCORE: {}".format(score)
 
 def hintButton2():
+    """Print the second hint on click"""
     global score
     textGuessAnswer.insert(END, APIcall.hero_letters() + '\n--------------------------------------------------\n')
     hint2Button.destroy()
@@ -29,6 +42,7 @@ def hintButton2():
     scoreLabel["text"] = "SCORE: {}".format(score)
 
 def hintButton3():
+    """Print the third hint on click"""
     global score
     textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n-------------------------------------------------\n')
     hint3Button.destroy()
@@ -36,6 +50,7 @@ def hintButton3():
     scoreLabel["text"] = "SCORE: {}".format(score)
 
 def hintButton4():
+    """Print the forth hint on click"""
     global score
     textGuessAnswer.insert(END, APIcall.hero_comics() + '\n--------------------------------------------------\n')
     hint4Button.destroy()
@@ -43,9 +58,9 @@ def hintButton4():
     scoreLabel["text"] = "SCORE: {}".format(score)
 
 def guessButtonClicked():
+    """On click Compare user input with the random superhero form APIcall"""
     global score
     if enterSuperHero.get().lower() == APIcall.hero_name().lower():
-        # textGuessAnswer.insert(INSERT,"U heeft het goed geraden!")
         textGuessAnswer.insert(END, "U heeft het goed geraden!")
         winnersWindow()
     else:
@@ -57,8 +72,8 @@ def guessButtonClicked():
 
 #region Windows
 
-
 def buildStartScreen():
+    """Forget all the other window packs and pack the startscreen and its buttons"""
     howToPlayScreen.pack_forget()
     highScoreScreen.pack_forget()
     mainGame.pack_forget()
@@ -68,25 +83,24 @@ def buildStartScreen():
     quitButton.pack(side=BOTTOM)
     playButton.pack(side=BOTTOM)
 
-
-
 def highScores():
+    """Forget all the other window packs and only pack the highscore screen"""
     aboutPage.pack_forget()
     howToPlayScreen.pack_forget()
     startScreen.pack_forget()
     mainGame.pack_forget()
     highScoreScreen.pack(fill=BOTH, expand=True)
 
-
 def howToPlay():
+    """Forget all the other window packs and only pack the how to play screen"""
     aboutPage.pack_forget()
     highScoreScreen.pack_forget()
     mainGame.pack_forget()
     startScreen.pack_forget()
     howToPlayScreen.pack(fill=BOTH, expand=True)
 
-
 def mainGameWindow():
+    """First do a API call, disable the menu and forget all the other window packs than pack the main game"""
     #APIcall.ID_test()
     emptyMenu = Menu(root)
     root.config(menu=emptyMenu)
@@ -97,8 +111,8 @@ def mainGameWindow():
     winnersPage.pack_forget()
     mainGame.pack(fill=BOTH, expand=True)
 
-
 def aboutWindow():
+    """Forget all the other window packs and only pack the about us screen"""
     howToPlayScreen.pack_forget()
     highScoreScreen.pack_forget()
     startScreen.pack_forget()
@@ -106,6 +120,8 @@ def aboutWindow():
     aboutPage.pack(fill=BOTH, expand=True)
 
 def winnersWindow():
+    """Show the menu bar again and forget all the other window packs and only pack the winners screen"""
+    root.config(menu=menubar)
     howToPlayScreen.pack_forget()
     highScoreScreen.pack_forget()
     startScreen.pack_forget()
@@ -116,9 +132,13 @@ def winnersWindow():
 
 #endregion
 
+#region tkinter Root
+
 root = Tk()
 root.title("SuperHero The Game")
 root.geometry("1920x1080")
+
+#endregion
 
 #region Windows and Attributes
 
@@ -156,11 +176,6 @@ text.insert(INSERT,  "When you start to play the game you get 25 points. \n"
                     "If you guess the character wrong, you loose 1 point. \n")
 text.pack()
 backButtonHowTo.pack(padx=100, pady=20)
-#
-# hintDisplayDict = {'1': "Press 1 description of the character.",
-#                    '2': "Press 2 for the number of characters in the name.",
-#                    '3': "de eerste letter van het te raden character.",
-#                    '4': "een aantal comics waar het te raden character in voorkomt."}
 
 #Build the main game window and build attributes
 mainGame = Frame(master=root, bg="black")
@@ -169,8 +184,6 @@ enterSuperHero = Entry(master=mainGame)
 enterSuperHero.place(relx=0.5, rely=0.5, anchor=W)
 labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A SUPERHERO:")
 labelEntryInput.place(relx=0.5, rely=0.5, anchor =E)
-#labelHints = Label(master=mainGame, bg="black", fg="white", text="{}\n {}\n {}\n {}\n".format(hintDisplayDict["1"], hintDisplayDict["2"],                                                                      hintDisplayDict["3"], hintDisplayDict["4"]))
-#labelHints.pack(side=TOP, pady=10, padx=0)
 textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=6, wrap=WORD, yscrollcommand=set())
 guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked)
 giveUpButton = Button(master=mainGame, text="GIVE UP", )
@@ -219,21 +232,12 @@ backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen
 
 #Build winners window and attributes
 winnersPage = Frame(master=root, bg="black")
-labelframe7= Label(master=winnersPage, text='CONGRATIOLATIONS \n''You Win!\n',font='times 36 bold',fg= 'Yellow',bg='black',width= 10000,height=4)
-labelframe7.pack()
-labelframe8 = Label(master=winnersPage, text='You scored {} points and placed on the scoreboard!'.format(score), font='times 30 bold', fg='white', bg='black', width=1000, height=5)
-labelframe8.pack(side=BOTTOM)
-backButtonWin = Button(master=winnersPage, text='PLAY AGIAN', fg='black', command=, height=20, width=19)
-backButtonWin.pack(side=RIGHT)
-backButtonWin = Button(master=winnersPage, text='Back', font='times 25', bg='grey', fg='black', height=20, width=19)
-backButtonWin.pack(side=LEFT)
-#endregion
-
-
-
-
-root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
-buildStartScreen()
+labelWinMessage = Label(master=winnersPage, text='CONGRATIOLATIONS \n''You Win!\n',font='times 16 bold', fg= 'Yellow', bg='black')
+labelWinMessage.pack()
+backButtonWin = Button(master=winnersPage, text='PLAY AGIAN', fg='black', command=restartButton, height=2, width=40, cursor="hand2")
+backButtonWin.place(relx=0.6, rely=0.88)
+backButtonWin = Button(master=winnersPage, text='QUIT', fg='black', command=root.quit, height=2, width=40, cursor="hand2")
+backButtonWin.place(relx=0.2, rely=0.88)
 
 # Add a Drop-down menu to the start screen
 menubar = Menu(root)
@@ -243,6 +247,18 @@ helpmenu.add_command(label="About us", command=aboutWindow)
 helpmenu.add_command(label="Highscores", command=highScores)
 menubar.add_cascade(label="Menu", menu=helpmenu)
 root.config(menu=menubar)
+
+#Call to URL to set application icon
+iconU = urlopen("https://cdn3.iconfinder.com/data/icons/movie-company/129/MARVEL.png")
+raw_data_icon = iconU.read()
+
+b64_data = base64.encodebytes((raw_data_icon))
+image = PhotoImage(data=b64_data)
+
+root.tk.call('wm', 'iconphoto', root._w, image)
+buildStartScreen()
+
+#endregion
 
 # start the application
 root.mainloop()
