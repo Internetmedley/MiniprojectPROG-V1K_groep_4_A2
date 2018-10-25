@@ -40,7 +40,8 @@ def guessButtonClicked():
     global score
     if enterSuperHero.get().lower() == APIcall.hero_name().lower():
         # textGuessAnswer.insert(INSERT,"U heeft het goed geraden!")
-        textGuessAnswer.update("U heeft het goed geraden!")
+        textGuessAnswer.insert(END, "U heeft het goed geraden!")
+        winnersWindow()
     else:
         textGuessAnswer.insert(END, "U heeft het fout geraden!")
         score -= 1
@@ -101,6 +102,7 @@ def winnersWindow():
     startScreen.pack_forget()
     mainGame.pack_forget()
     aboutPage.pack_forget()
+    winnersPage.pack(fill=BOTH, expand=True)
 
 
 #endregion
@@ -251,7 +253,7 @@ backButtonWin.pack(side=LEFT)
 
 
 
-root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
+# root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
 buildStartScreen()
 
 # Add a Drop-down menu to the start screen
