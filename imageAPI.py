@@ -1,18 +1,13 @@
-from tkinter import  *
+from tkinter import *
 from PIL import Image, ImageTk
 from urllib.request import urlopen
 from io import BytesIO
-from PROG import APIcall
+import APIcall
 
 
-
-informatie = APIcall.ID_test()
-plaatje_url = informatie['data']['results'][0]['thumbnail']['path'] + '.' + informatie['data']['results'][0]['thumbnail']['extension']
-print(plaatje_url)
+plaatje_url = APIcall.hero_image_URL()
 
 #plaatje_url = 'http://i.annihil.us/u/prod/marvel/i/mg/8/20/4c002f4a15c1c.jpg'
-
-
 
 root = Tk()
 

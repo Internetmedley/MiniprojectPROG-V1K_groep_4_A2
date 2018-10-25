@@ -18,7 +18,6 @@ def ID_test():
 
         charID = random.randint(1009146, 1015035)
         if str(charID) + '\n' in lines or str(charID) in lines:
-            # print("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY")
             continue
         # print(charID)
 
