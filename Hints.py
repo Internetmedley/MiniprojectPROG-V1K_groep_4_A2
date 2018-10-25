@@ -1,15 +1,15 @@
 import APIcall
 informatie = APIcall.ID_test()
-print(informatie)
-print(APIcall.hero_name(informatie))
+# print(informatie)
+# print(APIcall.hero_name(informatie))
 print(APIcall.hero_description(informatie))
 print(APIcall.hero_letters(informatie))
 print(APIcall.hero_comics(informatie))
 print(APIcall.eerste_letter(informatie))
-APIcall.hero_description(informatie)
-APIcall.hero_letters(informatie)
-APIcall.hero_comics(informatie)
-APIcall.hero_letters(informatie)
+# APIcall.hero_description(informatie)
+# APIcall.hero_letters(informatie)
+# APIcall.hero_comics(informatie)
+# APIcall.hero_letters(informatie)
 
 nummer_lijst = [1, 2, 3, 4]
 
