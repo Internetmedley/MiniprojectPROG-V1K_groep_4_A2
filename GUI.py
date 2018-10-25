@@ -1,12 +1,18 @@
 from tkinter import *
 import APIcall
 import scoredisplay
+import os
 
 # region Globals
 score = 25
+
 # endregion
 
 # region Buttons
+
+def restartButton():
+    superHeroGame = sys.executable()
+
 
 def hintButton1():
     global score
@@ -57,9 +63,11 @@ def buildStartScreen():
     highScoreScreen.pack_forget()
     mainGame.pack_forget()
     aboutPage.pack_forget()
+    winnersPage.pack_forget()
     startScreen.pack(fill=BOTH, expand=True)
     quitButton.pack(side=BOTTOM)
     playButton.pack(side=BOTTOM)
+
 
 
 def highScores():
@@ -86,6 +94,7 @@ def mainGameWindow():
     howToPlayScreen.pack_forget()
     highScoreScreen.pack_forget()
     startScreen.pack_forget()
+    winnersPage.pack_forget()
     mainGame.pack(fill=BOTH, expand=True)
 
 
@@ -178,16 +187,9 @@ hint2Button.place(relx=0.53, rely=0.3)
 hint3Button.place(relx=0.63, rely=0.3)
 hint4Button.place(relx=0.26, rely=0.3)
 
-
 #Build the about page and its attributes
 aboutPage = Frame(master=root, bg="black")
-labelframe1 = Label(master=aboutPage,
-                    text='About us and the game: \n',
-                    font='times 16 bold',
-                    fg= 'white',
-                    bg='black',
-                    width= 10000,
-                    height=5)
+labelframe1 = Label(master=aboutPage,text='About us and the game: \n',font='times 16 bold',fg= 'white',bg='black',width= 10000,height=5)
 labelframe1.pack(side=TOP)
 labelframe1= Label(master=aboutPage,
                    text='Our opinions going into this project: \n'
@@ -199,11 +201,7 @@ labelframe1= Label(master=aboutPage,
                    '"Jesse B: Starting the project was quite a struggle because I fas far behind with my knowledge but I have caught up for and thanks to my team, so I wanted to thank them again."\n'
                    '"Ramon P: I had difficulty visualising the project but after all the hard work we put I had a lot of fun."\n'
                    '"Jelle-Jetze H: I had difficulty taking the lead as projectleader but after all backup I received from my team I got a lot more confident in my role."\n',
-                   fg= 'white',
-                   bg='black',
-                   font='times 11',
-                   width= 100000,
-                   height=10)
+                   fg= 'white',bg='black',font='times 11',width= 100000,height=10)
 labelframe1.pack(side=TOP)
 labelframe1 = Label(master=aboutPage,
                    text='Reason for creating this game:\n'
@@ -211,11 +209,7 @@ labelframe1 = Label(master=aboutPage,
                    'This game was originally a school project. We could choose from many different assignments but this one just stood out as project.\n'
                    'But what started as school-project ended in a fun hobby project with some new friends.\n'
                    "We let our imagination go loose on this project and we realy did not try to hold back",
-                   fg= 'white',
-                   bg='black',
-                   font='times 11',
-                   width= 1000000,
-                   height=7)
+fg= 'white', bg='black', font='times 11', width= 1000000,height=7)
 labelframe1.pack(side=LEFT)
 frame= Frame(master=root, bg='black')
 frame.pack()
@@ -225,26 +219,11 @@ backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen
 
 #Build winners window and attributes
 winnersPage = Frame(master=root, bg="black")
-labelframe7= Label(master=winnersPage,
-              text='CONGRATIOLATIONS \n'
-                   'You Win!\n',
-              font='times 36 bold',
-              fg= 'Yellow',
-              bg='black',
-              width= 10000,
-              height=4)
+labelframe7= Label(master=winnersPage, text='CONGRATIOLATIONS \n''You Win!\n',font='times 36 bold',fg= 'Yellow',bg='black',width= 10000,height=4)
 labelframe7.pack()
-
-labelframe8 = Label(master=winnersPage,
-                   text= 'You scored {} points and placed on the scoreboard!'.format(score),
-                   font= 'times 30 bold',
-                   fg= 'white',
-                   bg= 'black',
-                   width=1000,
-                   height=5)
+labelframe8 = Label(master=winnersPage, text='You scored {} points and placed on the scoreboard!'.format(score), font='times 30 bold', fg='white', bg='black', width=1000, height=5)
 labelframe8.pack(side=BOTTOM)
-
-backButtonWin = Button(master=winnersPage, text='Play\n' + 'again', font='times 25', fg='black', bg='grey', height=20, width=19)
+backButtonWin = Button(master=winnersPage, text='PLAY AGIAN', fg='black', command=, height=20, width=19)
 backButtonWin.pack(side=RIGHT)
 backButtonWin = Button(master=winnersPage, text='Back', font='times 25', bg='grey', fg='black', height=20, width=19)
 backButtonWin.pack(side=LEFT)
@@ -253,12 +232,11 @@ backButtonWin.pack(side=LEFT)
 
 
 
-# root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
+root.iconbitmap("C:/Users/ramon/Downloads/marvel.ico")
 buildStartScreen()
 
 # Add a Drop-down menu to the start screen
 menubar = Menu(root)
-
 helpmenu = Menu(menubar, tearoff=0)
 helpmenu.add_command(label="How to play", command=howToPlay)
 helpmenu.add_command(label="About us", command=aboutWindow)
