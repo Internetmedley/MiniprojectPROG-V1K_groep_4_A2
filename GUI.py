@@ -295,7 +295,7 @@ def Game():
     enterSuperHero.place(relx=0.505, rely=0.5, anchor=W)
     labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A CHARACTER:", font='Fixedsys 18')
     labelEntryInput.place(relx=0.495, rely=0.5, anchor =E)
-    textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=6, wrap=WORD, yscrollcommand=set(), font='Fixedsys')
+    textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=16, wrap=WORD, yscrollcommand=set(), font='Fixedsys 12')
     guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys')
     giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys')
     guessButton.pack()

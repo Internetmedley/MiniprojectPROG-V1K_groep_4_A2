@@ -77,10 +77,10 @@ def hero_letters():
         naam = info['data']['results'][0]['name']
         if '(' in naam:
             naam = naam.replace(naam[naam.index('(') - 1:], '')
-            hint = 'De naam bevat {} letters.'.format(len(naam))
+            hint = 'The name contains {} letters.'.format(len(naam))
             return hint
         else:
-            hint = 'De naam bevat {} letters.'.format(len(naam))
+            hint = 'The name contains {} letters.'.format(len(naam))
             return hint
 
 
@@ -99,8 +99,8 @@ def eerste_letter():
     ":returns de eerste letter van naam"
     with open('informatie.json', 'r') as f:
         info = json.load(f)
-        naam = info['data']['results'][0]['name']
-        return naam[0]
+        naam = "The first letter is a '{}'.".format(info['data']['results'][0]['name'][0])
+        return naam
 
 
 def hero_comics():
