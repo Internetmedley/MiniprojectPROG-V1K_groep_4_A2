@@ -1,5 +1,4 @@
 #region Imports
-
 import APIcall
 import scoredisplay
 import os
@@ -15,9 +14,12 @@ from datetime import date
 #endregion
 
 # region Globals
+# The score of the player on start of the game
 score = 25
 
 # endregion
+
+# region Game
 
 
 def music():
@@ -25,7 +27,6 @@ def music():
     mixer.init()
     mixer.music.load('C:/Users/remyd/Downloads/Avengers_Suite_Theme.mp3')
     mixer.music.play(-1)
-
 
 
 def Game():
@@ -87,12 +88,10 @@ def Game():
                     json.dump(allTimeDict, f)
         return
 
-
     def restartButton():
         """Restarts the whole game so everything gets ressted"""
         python = sys.executable
         os.execl(python, python, * sys.argv)
-
 
     def hintButton1():
         """Prints the first hint on click"""
@@ -200,8 +199,8 @@ def Game():
         aboutPage.pack_forget()
         winnersPage.pack(fill=BOTH, expand=True)
         labelWinMessage.pack()
-        plaatje_url = APIcall.hero_image_URL()
-        u = urlopen(plaatje_url)
+        image_url = APIcall.hero_image_URL()
+        u = urlopen(image_url)
         raw_data = u.read()
         u.close()
         im = Image.open(BytesIO(raw_data))
@@ -239,9 +238,9 @@ def Game():
 
     #endregion
 
-    #region Windows and Attributes
+    # region Windows and Attributes
 
-    #Build startscreen and attributes
+    # Build start screen and attributes
     startScreen = Frame(master=root, bg="black")
     startScreen.pack(fill=BOTH, expand=True)
     playButton = Button(master=startScreen, text="PLAY", command=mainGameWindow, height=2, width=40, cursor="hand2", font='Fixedsys')
@@ -249,12 +248,15 @@ def Game():
     quitButton.pack(side=BOTTOM, pady=55)
     playButton.pack(side=BOTTOM, pady=2)
 
-    #Build highscorescreen and attributes
+    # Build high score screen and attributes
     highScoreScreen = Frame(master=root, bg="black")
     highScoreScreen.pack(fill=BOTH, expand=True)
     backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
     backButtonScore.pack(side=BOTTOM, padx=20, pady=60)
     hiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
+    hiScoreLabel.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+    # Build the how to play screen and attributes
     hiScoreLabel.place(relx=0.25, rely=0.2, anchor=N)
     dailyHiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
     dailyHiScoreLabel.place(relx=0.75, rely=0.2, anchor=N)
@@ -277,7 +279,7 @@ def Game():
     text.pack()
     backButtonHowTo.pack(padx=100, pady=20)
 
-    #Build the main game window and build attributes
+    # Build the main game window and build attributes
     mainGame = Frame(master=root, bg="black")
     mainGame.pack(fill=BOTH, expand=True)
     enterSuperHero = Entry(master=mainGame, font='Fixedsys')
@@ -301,7 +303,7 @@ def Game():
     hint3Button.place(relx=0.63, rely=0.3)
     hint4Button.place(relx=0.26, rely=0.3)
 
-    #Build the about page and its attributes
+    # Build the about page and its attributes
     aboutPage = Frame(master=root, bg="black")
     labelframe1 = Label(master=aboutPage,text='About us and the game: \n', font='Fixedsys',fg= 'white', bg='black', width= 10000, height=5)
     labelframe1.pack(side=TOP)
@@ -332,7 +334,7 @@ def Game():
     backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys')
     backButtonAbout.pack()
 
-    #Build winners window and attributes
+    # Build winners window and attributes
     winnersPage = Frame(master=root, bg="black")
     labelWinMessage = Label(master=winnersPage, text='CONGRATIOLATIONS \n''You Win!\n', font='Fixedsys', fg= 'Yellow', bg='black')
     backButtonWin = Button(master=winnersPage, text='PLAY AGIAN', fg='black', command=restartButton, height=2, width=40, cursor="hand2", font='Fixedsys')
@@ -343,8 +345,6 @@ def Game():
     submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_submit_for_all_time_highscore, font='Fixedsys')
     usernameLabel = Label(master=winnersPage, bg="black", fg="white", text="", font='Fixedsys')
 
-
-
     # Add a Drop-down menu to the start screen
     menubar = Menu(root)
     helpmenu = Menu(menubar, tearoff=0)
@@ -354,7 +354,7 @@ def Game():
     menubar.add_cascade(label="Menu", menu=helpmenu, font='Fixedsys')
     root.config(menu=menubar)
 
-    #Call to URL to set application icon
+    # Call to URL to set application icon
     iconU = urlopen("https://cdn3.iconfinder.com/data/icons/movie-company/129/MARVEL.png")
     raw_data_icon = iconU.read()
     b64_data = base64.encodebytes((raw_data_icon))
@@ -362,11 +362,13 @@ def Game():
     root.tk.call('wm', 'iconphoto', root._w, image)
     buildStartScreen()
 
-    #endregion
+    # endregion
 
     # start the application
     root.mainloop()
+# endregion
 
+# region Multi-threading
 # NOTE on threads: We use threads so the game and game music can run as separate processes on the CPU
 
 
@@ -379,4 +381,4 @@ start_music.start()
 start_print = threading.Thread(target=Game())
 # Starts the game process thread
 start_print.start()
-
+# endregion
