@@ -11,6 +11,7 @@ import json
 from io import BytesIO
 from pygame import mixer
 import threading
+from datetime import date
 #endregion
 
 # region Globals
@@ -22,7 +23,7 @@ score = 25
 def music():
     """Call mixer and play marvel theme as background music"""
     mixer.init()
-    mixer.music.load('C:/Users/ramon/Downloads/Avengers_Suite_Theme.mp3')
+    mixer.music.load('C:/Users/remyd/Downloads/Avengers_Suite_Theme.mp3')
     mixer.music.play(-1)
 
 
@@ -32,37 +33,58 @@ def Game():
 
     # region Buttons
 
-
-    def username_clicked():
+    def username_submit_for_all_time_highscore():
         global score
+        vandaag = str(date.today())
         with open('hi-scores.json', 'r') as f:
-            jsontext = json.load(f)
+            allTimeDict = json.load(f)
+        with open('daily-hi-score.json', 'r') as f:
+            dailyDict = json.load(f)
+        try:
+            dictInDailyDictWithoutDate = dailyDict[vandaag]
+            if len(usernameEntry.get()) > 14:
+                usernameLabel["text"] = "That username is too long, please try again."
+                return
+            elif len(usernameEntry.get()) < 3:
+                usernameLabel["text"] = "That username is too short, please try again."
+                return
+            elif usernameEntry.get() in allTimeDict.keys() or usernameEntry.get() in dailyDict[vandaag]:                        # anders werkt het niet met de dictionary en values
+                usernameLabel["text"] = "That username is already being used, please try another one."
+                return
+            else:
+                dictInDailyDictWithoutDate.update({usernameEntry.get(): score})
+                allTimeDict.update({usernameEntry.get(): score})
+                submitUsername.destroy()
 
-        if len(usernameEntry.get()) > 14:
-            usernameLabel["text"] = "That username is too long, please try again."
-            return
-        elif len(usernameEntry.get()) < 3:
-            usernameLabel["text"] = "That username is too short, please try again."
-            return
-        elif usernameEntry.get() in jsontext.keys():                        # anders werkt het niet met de dictionary en values
-            usernameLabel["text"] = "That username is already being used, please try another one."
-            return
-        else:
-            jsontext.update({usernameEntry.get(): score})
-            submitUsername.destroy()
+                if score > min(dictInDailyDictWithoutDate.values()):
+                    lijstKeysDailyHighScore = (sorted(dictInDailyDictWithoutDate, key=dictInDailyDictWithoutDate.__getitem__,reverse=True))  # maakt lijst van keys van reverse gesorteerde values
+                    lijstValuesDailyHighScore = (sorted(dictInDailyDictWithoutDate.values(), reverse=True))  # maakt lijst van reverse gesorteerde values
 
-        lijstKeys = (sorted(jsontext, key=jsontext.__getitem__, reverse=True))              # maakt lijst van keys van reverse gesorteerde values
-        lijstValues = (sorted(jsontext.values(), reverse=True))                         # maakt lijst van reverse gesorteerde values
+                    dictInDailyDictWithoutDate.clear()
+                    for i in range(0, 5):
+                        try:
+                            dictInDailyDictWithoutDate.update({lijstKeysDailyHighScore[i]: lijstValuesDailyHighScore[i]})
+                        except IndexError:
+                            break
+                    with open('daily-hi-score.json', 'w') as f:
+                        json.dump({vandaag: dictInDailyDictWithoutDate}, f)
+        except KeyError:
+            with open('daily-hi-score.json', 'w') as f:
+                json.dump({vandaag: {usernameEntry.get(): score}}, f)
 
-        jsontext.clear()
-        for i in range(0, 10):
-            try:
-                jsontext.update({lijstKeys[i]: lijstValues[i]})
-            except KeyError:
-                break
+        if score > min(allTimeDict.values()):
+            lijstKeysAllTimeHighScore = (sorted(allTimeDict, key=allTimeDict.__getitem__, reverse=True))              # maakt lijst van keys van reverse gesorteerde values
+            lijstValuesAllTimeHighScore = (sorted(allTimeDict.values(), reverse=True))                         # maakt lijst van reverse gesorteerde values
 
-        with open('hi-scores.json', 'w') as f:
-                json.dump(jsontext, f)
+            allTimeDict.clear()
+            for i in range(0, 10):
+                try:
+                    allTimeDict.update({lijstKeysAllTimeHighScore[i]: lijstValuesAllTimeHighScore[i]})
+                except KeyError:
+                    break
+
+            with open('hi-scores.json', 'w') as f:
+                    json.dump(allTimeDict, f)
         return
 
 
@@ -136,7 +158,8 @@ def Game():
         howToPlayScreen.pack_forget()
         startScreen.pack_forget()
         mainGame.pack_forget()
-        hiScoreLabel["text"] = "HIGHSCORES: \n\n" + scoredisplay.high_score_print()
+        hiScoreLabel["text"] = "ALL-TIME HIGHSCORES: \n\n" + scoredisplay.high_score_print()
+        dailyHiScoreLabel["text"] = "DAILY HIGHSCORES {}: \n\n".format(str(date.today())) + scoredisplay.daily_high_scores_print()
         highScoreScreen.pack(fill=BOTH, expand=True)
 
     def howToPlay():
@@ -187,8 +210,11 @@ def Game():
         heroImageLabel.image = photo
         heroImageLabel.pack()
         with open('hi-scores.json', 'r') as f:
-            data = json.load(f)
-            if score > min(data.values()):
+            dataAllTimeHighScores = json.load(f)
+        with open('daily-hi-score.json', 'r') as f:
+            dataDailyHighScores = json.load(f)
+        try:
+            if score > min(dataAllTimeHighScores.values()) or score > min(dataDailyHighScores[str(date.today())]):
                 usernameLabel["text"] = "The character was: {}!\n" \
                                         "Give username between 3 and 14 characters.".format(APIcall.hero_name())
                 usernameLabel.pack()
@@ -198,6 +224,8 @@ def Game():
                 usernameLabel["text"] = "The character was: {}!\n" \
                                         "Your score is not high enough to be in the high-score!".format(APIcall.hero_name())
                 usernameLabel.pack()
+        except KeyError:
+            pass
 
 
     #endregion
@@ -227,8 +255,9 @@ def Game():
     backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
     backButtonScore.pack(side=BOTTOM, padx=20, pady=60)
     hiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
-    hiScoreLabel.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+    hiScoreLabel.place(relx=0.25, rely=0.2, anchor=N)
+    dailyHiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
+    dailyHiScoreLabel.place(relx=0.75, rely=0.2, anchor=N)
 
     #Build howtoplayscreen and attributes
     howToPlayScreen = Frame(master=root, bg="black")
@@ -261,7 +290,7 @@ def Game():
     guessButton.pack()
     giveUpButton.pack()
     textGuessAnswer.pack()
-    scoreLabel = Label(master=mainGame, bg="black", fg="white", text="SCORE: 25", font='Fixedsys')
+    scoreLabel = Label(master=mainGame, bg="black", fg="white", text="SCORE: 25", font='Fixedsys 18')
     scoreLabel.place(relx=1.0, rely=0.0, anchor=NE)
     hint1Button = Button(master=mainGame, text="Give description", command=hintButton1, font='Fixedsys')
     hint2Button = Button(master=mainGame, text="Give amount letters", command=hintButton2, font='Fixedsys')
@@ -311,7 +340,7 @@ def Game():
     backButtonWin = Button(master=winnersPage, text='QUIT', fg='black', command=root.quit, height=2, width=40, cursor="hand2", font='Fixedsys')
     backButtonWin.place(relx=0.2, rely=0.88)
     usernameEntry = Entry(master=winnersPage, font='Fixedsys')
-    submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_clicked, font='Fixedsys')
+    submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_submit_for_all_time_highscore, font='Fixedsys')
     usernameLabel = Label(master=winnersPage, bg="black", fg="white", text="", font='Fixedsys')
 
 

@@ -1,5 +1,5 @@
 import json
-
+from datetime import date
 
 def high_score_check(score, username):
     "checkt of de high-score hoog genoeg is en dan voegt ie hem toe"
@@ -47,6 +47,20 @@ def high_score_print():
     for key, value in data.items():
         hiscore += ("{:14}\t\t{:2}\n".format(key, value))
 
+    return hiscore
+
+def daily_high_scores_print():
+    """print de daily high-scorelijst"""
+    vandaag = str(date.today())
+    with open('daily-hi-score.json', 'r') as f:
+        dailyDict = json.load(f)
+    try:
+        hiscore = ''
+        for key, value in dailyDict[vandaag].items():
+            hiscore += ("{:14}\t\t{:2}\n".format(key, value))
+    except KeyError:
+        hiscore += "No entries in the daily hi-score!\n" \
+                   "Play now to earn a spot!"
     return hiscore
 
 
