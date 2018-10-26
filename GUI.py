@@ -9,7 +9,7 @@ from urllib.request import urlopen
 import base64
 import json
 from io import BytesIO
-from pygame import mixer # Load the required library
+from pygame import mixer
 import threading
 #endregion
 
@@ -18,15 +18,17 @@ score = 25
 
 # endregion
 
+
 def music():
+    """Call mixer and play marvel theme as background music"""
     mixer.init()
-    mixer.music.load('C:\\Users\\remyd\\Downloads\\Avengers Suite (Theme).mp3')
-    mixer.music.play()
+    mixer.music.load('C:/Users/ramon/Downloads/Avengers_Suite_Theme.mp3')
+    mixer.music.play(-1)
 
 
 
 def Game():
-
+    """Build the al the windows and attributes"""
 
     # region Buttons
 
@@ -42,7 +44,7 @@ def Game():
         elif len(usernameEntry.get()) < 3:
             usernameLabel["text"] = "That username is too short, please try again."
             return
-        elif usernameEntry.get() in jsontext.keys():                        # anders fuckt het met de dictionary en values
+        elif usernameEntry.get() in jsontext.keys():                        # anders werkt het niet met de dictionary en values
             usernameLabel["text"] = "That username is already being used, please try another one."
             return
         else:
@@ -106,10 +108,10 @@ def Game():
         """On click Compare user input with the random superhero form APIcall"""
         global score
         if enterSuperHero.get().lower() == APIcall.hero_name().lower():
-            textGuessAnswer.insert(END, "U heeft het goed geraden!")
+            textGuessAnswer.insert(END, "You gave the right awnser!")
             winnersWindow()
         else:
-            textGuessAnswer.insert(END, "U heeft het fout geraden!")
+            textGuessAnswer.insert(END, "Oeps you gave the wrong awnser!")
             score -= 1
             scoreLabel["text"] = "SCORE: {}".format(score)
 
@@ -180,7 +182,6 @@ def Game():
         raw_data = u.read()
         u.close()
         im = Image.open(BytesIO(raw_data))
-        # im = im.resize((450, 450), Image.ANTIALIAS)
         photo = ImageTk.PhotoImage(im)
         heroImageLabel = Label(master=winnersPage, image=photo)
         heroImageLabel.image = photo
@@ -258,6 +259,7 @@ def Game():
     guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys')
     giveUpButton = Button(master=mainGame, text="GIVE UP", font='Fixedsys')
     guessButton.pack()
+    giveUpButton.pack()
     textGuessAnswer.pack()
     scoreLabel = Label(master=mainGame, bg="black", fg="white", text="SCORE: 25", font='Fixedsys')
     scoreLabel.place(relx=1.0, rely=0.0, anchor=NE)
@@ -272,9 +274,9 @@ def Game():
 
     #Build the about page and its attributes
     aboutPage = Frame(master=root, bg="black")
-    labelframe1 = Label(master=aboutPage,text='About us and the game: \n', font='Fixedsys',fg= 'white',bg='black',width= 10000,height=5)
+    labelframe1 = Label(master=aboutPage,text='About us and the game: \n', font='Fixedsys',fg= 'white', bg='black', width= 10000, height=5)
     labelframe1.pack(side=TOP)
-    labelframe1= Label(master=aboutPage,
+    labelframe1 = Label(master=aboutPage,
                        text='Our opinions going into this project: \n'
                        '\n'
                        'This game was made by a copple of students, studying at the HU in Utrecht.\n'
@@ -299,6 +301,7 @@ def Game():
     downframe = Frame(master=root)
     downframe.pack(side=BOTTOM)
     backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys')
+    backButtonAbout.pack()
 
     #Build winners window and attributes
     winnersPage = Frame(master=root, bg="black")
@@ -335,6 +338,16 @@ def Game():
     # start the application
     root.mainloop()
 
+# NOTE on threads: We use threads so the game and game music can run as separate processes on the CPU
+
+
+# Builds a process thread to run the game music in
 start_music = threading.Thread(target=music())
+# Starts the music process thread
+start_music.start()
+
+# Builds a process thread to run the game in
 start_print = threading.Thread(target=Game())
+# Starts the game process thread
 start_print.start()
+
