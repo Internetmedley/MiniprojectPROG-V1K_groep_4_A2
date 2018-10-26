@@ -4,17 +4,17 @@ from urllib.request import urlopen
 from io import BytesIO
 import APIcall
 
+APIcall.ID_test()
 
-plaatje_url = APIcall.hero_image_URL()
-
-#plaatje_url = 'http://i.annihil.us/u/prod/marvel/i/mg/8/20/4c002f4a15c1c.jpg'
 
 root = Tk()
 
+
+plaatje_url = APIcall.hero_image_URL()
+print(APIcall.hero_image_URL())
 u = urlopen(plaatje_url)
 raw_data = u.read()
 u.close()
-
 im = Image.open(BytesIO(raw_data))
 photo = ImageTk.PhotoImage(im)
 
