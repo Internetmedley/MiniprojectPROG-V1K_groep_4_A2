@@ -16,6 +16,7 @@ from datetime import date
 # region Globals
 # The score of the player on start of the game
 score = 25
+numberOfHintsLeft = 4
 
 # endregion
 
@@ -25,7 +26,7 @@ score = 25
 def music():
     """Call mixer and play marvel theme as background music"""
     mixer.init()
-    mixer.music.load('C:/Users/remyd/Downloads/Avengers_Suite_Theme.mp3')
+    mixer.music.load("C:\\Users\\remyd\\Downloads\\Avengers_Suite_Theme.mp3")
     mixer.music.play(-1)
 
 
@@ -95,34 +96,42 @@ def Game():
 
     def hintButton1():
         """Prints the first hint on click"""
-        global score
-        textGuessAnswer.insert(END, APIcall.hero_description() + '\n--------------------------------------------------\n')
+        global score, numberOfHintsLeft
+        textGuessAnswer.insert(END, APIcall.hero_description() + '\n\n\t      -< scroll to go down >-\n\n')
         hint1Button.destroy()
         score -= 3
+        numberOfHintsLeft -= 1
+        hintLabel["text"] = "HINTS: {}".format(numberOfHintsLeft)
         scoreLabel["text"] = "SCORE: {}".format(score)
 
     def hintButton2():
         """Print the second hint on click"""
-        global score
-        textGuessAnswer.insert(END, APIcall.hero_letters() + '\n--------------------------------------------------\n')
+        global score, numberOfHintsLeft
+        textGuessAnswer.insert(END, APIcall.hero_letters() + '\n\n\t      -< scroll to go down >-\n\n')
         hint2Button.destroy()
         score -= 3
+        numberOfHintsLeft -= 1
+        hintLabel["text"] = "HINTS: {}".format(numberOfHintsLeft)
         scoreLabel["text"] = "SCORE: {}".format(score)
 
     def hintButton3():
         """Print the third hint on click"""
-        global score
-        textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n-------------------------------------------------\n')
+        global score, numberOfHintsLeft
+        textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n\n\t      -< scroll to go down >-\n\n')
         hint3Button.destroy()
         score -= 3
+        numberOfHintsLeft -= 1
+        hintLabel["text"] = "HINTS: {}".format(numberOfHintsLeft)
         scoreLabel["text"] = "SCORE: {}".format(score)
 
     def hintButton4():
         """Print the forth hint on click"""
-        global score
-        textGuessAnswer.insert(END, APIcall.hero_comics() + '\n--------------------------------------------------\n')
+        global score, numberOfHintsLeft
+        textGuessAnswer.insert(END, APIcall.hero_comics() + '\n\n\t      -< scroll to go down >-\n\n')
         hint4Button.destroy()
         score -= 3
+        numberOfHintsLeft -= 1
+        hintLabel["text"] = "HINTS: {}".format(numberOfHintsLeft)
         scoreLabel["text"] = "SCORE: {}".format(score)
 
     def guessButtonClicked():
@@ -171,7 +180,7 @@ def Game():
 
     def mainGameWindow():
         """First do a API call, disable the menu and forget all the other window packs than pack the main game"""
-        APIcall.ID_test()
+        # APIcall.ID_test()
         emptyMenu = Menu(root)
         root.config(menu=emptyMenu)
         aboutPage.pack_forget()
@@ -282,26 +291,29 @@ def Game():
     # Build the main game window and build attributes
     mainGame = Frame(master=root, bg="black")
     mainGame.pack(fill=BOTH, expand=True)
-    enterSuperHero = Entry(master=mainGame, font='Fixedsys')
-    enterSuperHero.place(relx=0.5, rely=0.5, anchor=W)
-    labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A SUPERHERO:", font='Fixedsys')
-    labelEntryInput.place(relx=0.5, rely=0.5, anchor =E)
+    enterSuperHero = Entry(master=mainGame, font='Fixedsys 18')
+    enterSuperHero.place(relx=0.505, rely=0.5, anchor=W)
+    labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A CHARACTER:", font='Fixedsys 18')
+    labelEntryInput.place(relx=0.495, rely=0.5, anchor =E)
     textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=6, wrap=WORD, yscrollcommand=set(), font='Fixedsys')
     guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys')
-    giveUpButton = Button(master=mainGame, text="GIVE UP", font='Fixedsys')
+    giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys')
     guessButton.pack()
     giveUpButton.pack()
     textGuessAnswer.pack()
     scoreLabel = Label(master=mainGame, bg="black", fg="white", text="SCORE: 25", font='Fixedsys 18')
-    scoreLabel.place(relx=1.0, rely=0.0, anchor=NE)
-    hint1Button = Button(master=mainGame, text="Give description", command=hintButton1, font='Fixedsys')
-    hint2Button = Button(master=mainGame, text="Give amount letters", command=hintButton2, font='Fixedsys')
-    hint3Button = Button(master=mainGame, text="Give first letter of name", command=hintButton3, font='Fixedsys')
-    hint4Button = Button(master=mainGame, text="Give comics in which the character appears", command=hintButton4, font='Fixedsys')
-    hint1Button.place(relx=0.45, rely=0.3)
-    hint2Button.place(relx=0.53, rely=0.3)
-    hint3Button.place(relx=0.63, rely=0.3)
-    hint4Button.place(relx=0.26, rely=0.3)
+    scoreLabel.place(relx=0.995, rely=0.005, anchor=NE)
+    hintLabel = Label(master=mainGame, bg="black", fg="white", text="HINTS: {}".format(numberOfHintsLeft), font='Fixedsys 18')
+    hintLabel.place(relx=0.18, rely=0.005, anchor=N)
+    hint1Button = Button(master=mainGame, text="Give DESCRIPTION!", command=hintButton1, font='Fixedsys 12', width=45, cursor="hand2")
+    hint2Button = Button(master=mainGame, text="Give amount LETTERS!", command=hintButton2, font='Fixedsys 12', width=45, cursor="hand2")
+    hint3Button = Button(master=mainGame, text="Give FIRST LETTER of NAME!", command=hintButton3, font='Fixedsys 12', width=45, cursor="hand2")
+    hint4Button = Button(master=mainGame, text="Give COMICS of CHARACTER appearance!", command=hintButton4, font='Fixedsys 12', width=45, cursor="hand2")
+    hint1Button.place(relx=0.18, rely=0.080, anchor=CENTER)
+    hint2Button.place(relx=0.18, rely=0.125, anchor=CENTER)
+    hint3Button.place(relx=0.18, rely=0.170, anchor=CENTER)
+    hint4Button.place(relx=0.18, rely=0.215, anchor=CENTER)
+
 
     # Build the about page and its attributes
     aboutPage = Frame(master=root, bg="black")
