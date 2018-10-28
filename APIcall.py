@@ -117,7 +117,7 @@ def hero_comics():
 def hero_image_URL():
     with open('informatie.json', 'r') as f:
         info = json.load(f)
-        imgURL = info['data']['results'][0]['thumbnail']['path'] + '/detail.' + info['data']['results'][0]['thumbnail'][
+        imgURL = info['data']['results'][0]['thumbnail']['path'] + '/portrait_uncanny.' + info['data']['results'][0]['thumbnail'][
             'extension']
         return imgURL
 

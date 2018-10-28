@@ -55,8 +55,6 @@ def Game():
                 return
             else:
                 dictInDailyDictWithoutDate.update({usernameEntry.get(): score})
-                allTimeDict.update({usernameEntry.get(): score})
-                submitUsername.destroy()
 
                 if score > min(dictInDailyDictWithoutDate.values()):
                     lijstKeysDailyHighScore = (sorted(dictInDailyDictWithoutDate, key=dictInDailyDictWithoutDate.__getitem__,reverse=True))  # maakt lijst van keys van reverse gesorteerde values
@@ -72,7 +70,10 @@ def Game():
                         json.dump({vandaag: dictInDailyDictWithoutDate}, f)
         except KeyError:
             with open('daily-hi-score.json', 'w') as f:
-                json.dump({vandaag: {usernameEntry.get(): score}}, f)
+                json.dump({vandaag: {usernameEntry.get(): score, "PLAYER 1": 0, "PLAYER 2": 0, "PLAYER 3": 0, "PLAYER 4": 0}}, f)
+
+        allTimeDict.update({usernameEntry.get(): score})
+        submitUsername.destroy()
 
         if score > min(allTimeDict.values()):
             lijstKeysAllTimeHighScore = (sorted(allTimeDict, key=allTimeDict.__getitem__, reverse=True))              # maakt lijst van keys van reverse gesorteerde values
@@ -82,7 +83,7 @@ def Game():
             for i in range(0, 10):
                 try:
                     allTimeDict.update({lijstKeysAllTimeHighScore[i]: lijstValuesAllTimeHighScore[i]})
-                except KeyError:
+                except IndexError:
                     break
 
             with open('hi-scores.json', 'w') as f:
@@ -97,7 +98,7 @@ def Game():
     def hintButton1():
         """Prints the first hint on click"""
         global score, numberOfHintsLeft
-        textGuessAnswer.insert(END, APIcall.hero_description() + '\n\n\t      -< scroll to go down >-\n\n')
+        textGuessAnswer.insert(END, APIcall.hero_description() + '\n\n\t     -< scroll to go down >-\n\n')
         hint1Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -107,7 +108,7 @@ def Game():
     def hintButton2():
         """Print the second hint on click"""
         global score, numberOfHintsLeft
-        textGuessAnswer.insert(END, APIcall.hero_letters() + '\n\n\t      -< scroll to go down >-\n\n')
+        textGuessAnswer.insert(END, APIcall.hero_letters() + '\n\n\t     -< scroll to go down >-\n\n')
         hint2Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -117,7 +118,7 @@ def Game():
     def hintButton3():
         """Print the third hint on click"""
         global score, numberOfHintsLeft
-        textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n\n\t      -< scroll to go down >-\n\n')
+        textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n\n\t     -< scroll to go down >-\n\n')
         hint3Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -127,7 +128,7 @@ def Game():
     def hintButton4():
         """Print the forth hint on click"""
         global score, numberOfHintsLeft
-        textGuessAnswer.insert(END, APIcall.hero_comics() + '\n\n\t      -< scroll to go down >-\n\n')
+        textGuessAnswer.insert(END, APIcall.hero_comics() + '\n\n\t     -< scroll to go down >-\n\n')
         hint4Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -157,8 +158,19 @@ def Game():
         aboutPage.pack_forget()
         winnersPage.pack_forget()
         startScreen.pack(fill=BOTH, expand=True)
-        quitButton.pack(side=BOTTOM)
-        playButton.pack(side=BOTTOM)
+        playButton.place(relx=0.995, rely=0.01, anchor=NE)
+        quitButton.place(relx=0.995, rely=0.085, anchor=NE)
+        start_screen_image_url = "https://images-na.ssl-images-amazon.com/images/I/91YWN2-mI6L._SL1500_.jpg"
+        u = urlopen(start_screen_image_url)
+        raw_data = u.read()
+        u.close()
+        im = Image.open(BytesIO(raw_data))
+        size = 1145, 754
+        im.thumbnail(size)
+        photo = ImageTk.PhotoImage(im)
+        homeImageLabel = Label(master=startScreen, image=photo)
+        homeImageLabel.image = photo
+        homeImageLabel.place(relx=0.4, rely=0.01, anchor=N)
 
     def highScores():
         """Forget all the other window packs and only pack the highscore screen"""
@@ -166,21 +178,23 @@ def Game():
         howToPlayScreen.pack_forget()
         startScreen.pack_forget()
         mainGame.pack_forget()
+        winnersPage.pack_forget()
         hiScoreLabel["text"] = "ALL-TIME HIGHSCORES: \n\n" + scoredisplay.high_score_print()
-        dailyHiScoreLabel["text"] = "DAILY HIGHSCORES {}: \n\n".format(str(date.today())) + scoredisplay.daily_high_scores_print()
+        dailyHiScoreLabel["text"] = "DAILY HIGHSCORES {}: \n\n".format(date.strftime(date.today(), "%d-%m-%Y")) + scoredisplay.daily_high_scores_print()
         highScoreScreen.pack(fill=BOTH, expand=True)
 
     def howToPlay():
         """Forget all the other window packs and only pack the how to play screen"""
         aboutPage.pack_forget()
-        highScoreScreen.pack_forget()
-        mainGame.pack_forget()
+        howToPlayScreen.pack_forget()
         startScreen.pack_forget()
+        mainGame.pack_forget()
+        winnersPage.pack_forget()
         howToPlayScreen.pack(fill=BOTH, expand=True)
 
     def mainGameWindow():
         """First do a API call, disable the menu and forget all the other window packs than pack the main game"""
-        # APIcall.ID_test()
+        #APIcall.ID_test()
         emptyMenu = Menu(root)
         root.config(menu=emptyMenu)
         aboutPage.pack_forget()
@@ -252,10 +266,8 @@ def Game():
     # Build start screen and attributes
     startScreen = Frame(master=root, bg="black")
     startScreen.pack(fill=BOTH, expand=True)
-    playButton = Button(master=startScreen, text="PLAY", command=mainGameWindow, height=2, width=40, cursor="hand2", font='Fixedsys')
-    quitButton = Button(master=startScreen, text="QUIT", command=root.quit, height=2, width=40, cursor="hand2", font='Fixedsys')
-    quitButton.pack(side=BOTTOM, pady=55)
-    playButton.pack(side=BOTTOM, pady=2)
+    playButton = Button(master=startScreen, text="PLAY", command=mainGameWindow, width=20, cursor="hand2", font='Fixedsys 18')
+    quitButton = Button(master=startScreen, text="QUIT", command=root.quit, width=20, cursor="hand2", font='Fixedsys 18')
 
     # Build high score screen and attributes
     highScoreScreen = Frame(master=root, bg="black")
@@ -263,14 +275,11 @@ def Game():
     backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
     backButtonScore.pack(side=BOTTOM, padx=20, pady=60)
     hiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
-    hiScoreLabel.place(relx=0.5, rely=0.5, anchor=CENTER)
-
-    # Build the how to play screen and attributes
     hiScoreLabel.place(relx=0.25, rely=0.2, anchor=N)
     dailyHiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
     dailyHiScoreLabel.place(relx=0.75, rely=0.2, anchor=N)
 
-    #Build howtoplayscreen and attributes
+    # Build the how to play screen and attributes
     howToPlayScreen = Frame(master=root, bg="black")
     howToPlayScreen.pack(fill=BOTH, expand=True)
     backButtonHowTo = Button(master=howToPlayScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
