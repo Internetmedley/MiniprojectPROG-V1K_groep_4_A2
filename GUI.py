@@ -170,6 +170,7 @@ def Game():
         photo = ImageTk.PhotoImage(im)
         homeImageLabel = Label(master=startScreen, image=photo)
         homeImageLabel.image = photo
+        homeImageLabel.pack_forget()
         homeImageLabel.place(relx=0.4, rely=0.01, anchor=N)
 
     def highScores():
@@ -190,6 +191,7 @@ def Game():
         startScreen.pack_forget()
         mainGame.pack_forget()
         winnersPage.pack_forget()
+        highScoreScreen.pack_forget()
         howToPlayScreen.pack(fill=BOTH, expand=True)
 
     def mainGameWindow():
@@ -210,17 +212,16 @@ def Game():
         highScoreScreen.pack_forget()
         startScreen.pack_forget()
         mainGame.pack_forget()
+        winnersPage.pack_forget()
         aboutPage.pack(fill=BOTH, expand=True)
 
     def winnersWindow():
         """Show the menu bar again and forget all the other window packs and only pack the winners screen"""
-        root.config(menu=menubar)
         howToPlayScreen.pack_forget()
         highScoreScreen.pack_forget()
         startScreen.pack_forget()
         mainGame.pack_forget()
         aboutPage.pack_forget()
-        winnersPage.pack(fill=BOTH, expand=True)
         labelWinMessage.pack()
         image_url = APIcall.hero_image_URL()
         u = urlopen(image_url)
@@ -248,6 +249,7 @@ def Game():
                 usernameLabel.pack()
         except KeyError:
             pass
+        winnersPage.pack(fill=BOTH, expand=True)
 
 
     #endregion
