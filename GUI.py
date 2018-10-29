@@ -26,7 +26,7 @@ numberOfHintsLeft = 4
 def music():
     """Call mixer and play marvel theme as background music"""
     mixer.init()
-    mixer.music.load("C:\\Users\\remyd\\Downloads\\Avengers_Suite_Theme.mp3")
+    mixer.music.load("C:\\Users\\ramon\\Downloads\\Avengers_Suite_Theme.mp3")
     mixer.music.play(-1)
 
 
@@ -142,7 +142,7 @@ def Game():
             textGuessAnswer.insert(END, "You gave the right awnser!")
             winnersWindow()
         else:
-            textGuessAnswer.insert(END, "Oeps you gave the wrong awnser!")
+            textGuessAnswer.insert(END, "Oh no you gave the wrong awnser!")
             score -= 1
             scoreLabel["text"] = "SCORE: {}".format(score)
 
@@ -251,6 +251,23 @@ def Game():
             pass
         winnersPage.pack(fill=BOTH, expand=True)
 
+    def lossWindow():
+        howToPlayScreen.pack_forget()
+        highScoreScreen.pack_forget()
+        startScreen.pack_forget()
+        mainGame.pack_forget()
+        aboutPage.pack_forget()
+        labelWinMessage.pack_forget()
+        image_url = APIcall.hero_image_URL()
+        u = urlopen(image_url)
+        raw_data = u.read()
+        u.close()
+        im = Image.open(BytesIO(raw_data))
+        photo = ImageTk.PhotoImage(im)
+        heroImage = Label(master=lossPage, image=photo)
+        heroImage.image = photo
+        heroImage.pack()
+        lossPage.pack(fill=BOTH, expand=True)
 
     #endregion
 
@@ -308,7 +325,7 @@ def Game():
     labelEntryInput.place(relx=0.495, rely=0.5, anchor =E)
     textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=16, wrap=WORD, yscrollcommand=set(), font='Fixedsys 12')
     guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys')
-    giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys')
+    giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys', command=lossWindow)
     guessButton.pack()
     giveUpButton.pack()
     textGuessAnswer.pack()
@@ -348,14 +365,14 @@ def Game():
                        'This game was originally a school project. We could choose from many different assignments but this one just stood out as project.\n'
                        'But what started as school-project ended in a fun hobby project with some new friends.\n'
                        "We let our imagination go loose on this project and we realy did not try to hold back",
-    fg= 'white', bg='black', font='Fixedsys', width= 1000000,height=7)
+    fg= 'white', bg='black', font='Fixedsys', width=1000000, height=7)
     labelframe1.pack(side=LEFT)
     frame= Frame(master=root, bg='black')
     frame.pack()
     downframe = Frame(master=root)
     downframe.pack(side=BOTTOM)
     backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys')
-    backButtonAbout.pack()
+    backButtonAbout.place(relx=0.5, rely=0.88)
 
     # Build winners window and attributes
     winnersPage = Frame(master=root, bg="black")
@@ -367,6 +384,21 @@ def Game():
     usernameEntry = Entry(master=winnersPage, font='Fixedsys')
     submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_submit_for_all_time_highscore, font='Fixedsys')
     usernameLabel = Label(master=winnersPage, bg="black", fg="white", text="", font='Fixedsys')
+
+    # Build the loss window and attributes
+    lossPage = Frame(master=root, bg="black")
+    losetext = Label(master=lossPage ,text='YOU LOSE',fg='red',bg='black',font='Fixedsys 18')
+    losetext.pack(side=TOP)
+    pointtext = Label(master=lossPage,
+    text='The character was {}!'.format(APIcall.hero_name()),  # vul hier de functie van de character in
+    fg='white',bg='black',font='Fixedsys 18')
+    pointtext.pack(side=BOTTOM)
+    play_again_button_lose = Button(master=lossPage,text='QUIT',font='Fixedsys 12',command=root.quit,cursor="hand2",height=2, width=40)
+    play_again_button_lose.place(relx=0.6, rely=0.88)
+    black_frame_lose = Frame(master=lossPage)
+    black_frame_lose.pack(side=BOTTOM)
+    home_screen_button_lose = Button(master=lossPage,text='PLAY AGIAN', font='Fixedsys 12', command=restartButton, cursor="hand2", height=2, width=40)
+    home_screen_button_lose.place(relx=0.2, rely=0.88)
 
     # Add a Drop-down menu to the start screen
     menubar = Menu(root)
