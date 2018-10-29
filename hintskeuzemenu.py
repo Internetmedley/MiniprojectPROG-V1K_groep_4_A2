@@ -1,10 +1,10 @@
-from PROG import APIcall
+import APIcall
 informatie = APIcall.ID_test()
 
-hintKeuzeDict = {'1' : APIcall.hero_description(informatie),
-                 '2' : APIcall.hero_letters(informatie),
-                 '3' : APIcall.eerste_letter(informatie),
-                 '4' : APIcall.hero_comics(informatie)}
+hintKeuzeDict = {'1' : APIcall.hero_description(),
+                 '2' : APIcall.hero_letters(),
+                 '3' : APIcall.eerste_letter(),
+                 '4' : APIcall.hero_comics()}
 
 hintDisplayDict = {'1': "een beschrijving van het te raden character.",
                    '2': "het aantal letters van het te raden character.",
