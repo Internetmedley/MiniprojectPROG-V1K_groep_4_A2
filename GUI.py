@@ -26,7 +26,7 @@ numberOfHintsLeft = 4
 def music():
     """Call mixer and play marvel theme as background music"""
     mixer.init()
-    mixer.music.load("C:\\Users\\ramon\\Downloads\\Avengers_Suite_Theme.mp3")
+    mixer.music.load("Avengers_Suite_Theme.mp3")
     mixer.music.play(-1)
 
 
@@ -45,13 +45,13 @@ def Game():
         try:
             dictInDailyDictWithoutDate = dailyDict[vandaag]
             if len(usernameEntry.get()) > 14:
-                usernameLabel["text"] = "That username is too long, please try again."
+                giveUsernameLabel["text"] = "That username is too long, please try again."
                 return
             elif len(usernameEntry.get()) < 3:
-                usernameLabel["text"] = "That username is too short, please try again."
+                giveUsernameLabel["text"] = "That username is too short, please try again."
                 return
             elif usernameEntry.get() in allTimeDict.keys() or usernameEntry.get() in dailyDict[vandaag]:                        # anders werkt het niet met de dictionary en values
-                usernameLabel["text"] = "That username is already being used, please try another one."
+                giveUsernameLabel["text"] = "That username is already being used, please try another one."
                 return
             else:
                 dictInDailyDictWithoutDate.update({usernameEntry.get(): score})
@@ -76,7 +76,7 @@ def Game():
         submitUsername.destroy()
 
         if score > min(allTimeDict.values()):
-            lijstKeysAllTimeHighScore = (sorted(allTimeDict, key=allTimeDict.__getitem__, reverse=True))              # maakt lijst van keys van reverse gesorteerde values
+            lijstKeysAllTimeHighScore = (sorted(allTimeDict, key=allTimeDict.__getitem__, reverse=True))       # maakt lijst van keys van reverse gesorteerde values
             lijstValuesAllTimeHighScore = (sorted(allTimeDict.values(), reverse=True))                         # maakt lijst van reverse gesorteerde values
 
             allTimeDict.clear()
@@ -90,6 +90,9 @@ def Game():
                     json.dump(allTimeDict, f)
         return
 
+    def commentRemove():
+        commentLabel["text"] = ""
+
     def restartButton():
         """Restarts the whole game so everything gets ressted"""
         python = sys.executable
@@ -98,6 +101,10 @@ def Game():
     def hintButton1():
         """Prints the first hint on click"""
         global score, numberOfHintsLeft
+        if score <= 4:
+            commentLabel["text"] = "You don't have enough points to ask for a hint!"
+            root.after(1000, commentRemove)
+            return
         textGuessAnswer.insert(END, APIcall.hero_description() + '\n\n\t     -< scroll to go down >-\n\n')
         hint1Button.destroy()
         score -= 3
@@ -108,6 +115,10 @@ def Game():
     def hintButton2():
         """Print the second hint on click"""
         global score, numberOfHintsLeft
+        if score <= 4:
+            commentLabel["text"] = "You don't have enough points to ask for a hint!"
+            root.after(1000, commentRemove)
+            return
         textGuessAnswer.insert(END, APIcall.hero_letters() + '\n\n\t     -< scroll to go down >-\n\n')
         hint2Button.destroy()
         score -= 3
@@ -118,6 +129,10 @@ def Game():
     def hintButton3():
         """Print the third hint on click"""
         global score, numberOfHintsLeft
+        if score <= 4:
+            commentLabel["text"] = "You don't have enough points to ask for a hint!"
+            root.after(1000, commentRemove)
+            return
         textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n\n\t     -< scroll to go down >-\n\n')
         hint3Button.destroy()
         score -= 3
@@ -128,6 +143,10 @@ def Game():
     def hintButton4():
         """Print the forth hint on click"""
         global score, numberOfHintsLeft
+        if score <= 4:
+            commentLabel["text"] = "You don't have enough points to ask for a hint!"
+            root.after(1000, commentRemove)
+            return
         textGuessAnswer.insert(END, APIcall.hero_comics() + '\n\n\t     -< scroll to go down >-\n\n')
         hint4Button.destroy()
         score -= 3
@@ -139,12 +158,17 @@ def Game():
         """On click Compare user input with the random superhero form APIcall"""
         global score
         if enterSuperHero.get().lower() == APIcall.hero_name().lower():
-            textGuessAnswer.insert(END, "You gave the right awnser!")
-            winnersWindow()
+            commentLabel["text"] = "You gave the right awnser!"
+            root.after(677, winnersWindow)
         else:
-            textGuessAnswer.insert(END, "Oh no you gave the wrong awnser!")
+            commentLabel["text"] = "Oh no you gave the wrong awnser!"
             score -= 1
             scoreLabel["text"] = "SCORE: {}".format(score)
+            if score == 0:
+                lossWindow()
+            root.after(1000, commentRemove)
+
+
 
     #endregion
 
@@ -157,9 +181,7 @@ def Game():
         mainGame.pack_forget()
         aboutPage.pack_forget()
         winnersPage.pack_forget()
-        startScreen.pack(fill=BOTH, expand=True)
-        playButton.place(relx=0.995, rely=0.01, anchor=NE)
-        quitButton.place(relx=0.995, rely=0.085, anchor=NE)
+
         start_screen_image_url = "https://images-na.ssl-images-amazon.com/images/I/91YWN2-mI6L._SL1500_.jpg"
         u = urlopen(start_screen_image_url)
         raw_data = u.read()
@@ -170,8 +192,8 @@ def Game():
         photo = ImageTk.PhotoImage(im)
         homeImageLabel = Label(master=startScreen, image=photo)
         homeImageLabel.image = photo
-        homeImageLabel.pack_forget()
         homeImageLabel.place(relx=0.4, rely=0.01, anchor=N)
+        startScreen.pack(fill=BOTH, expand=True)
 
     def highScores():
         """Forget all the other window packs and only pack the highscore screen"""
@@ -194,9 +216,23 @@ def Game():
         highScoreScreen.pack_forget()
         howToPlayScreen.pack(fill=BOTH, expand=True)
 
+    def loading():
+        """Sets information.json using APIcall.ID_test en updates loading text"""
+        numbers = threading.Thread(target=APIcall.ID_test, daemon=True)
+        numbers.start()
+        pressPlayToStartLabel.place(relx=0.84, anchor=W)
+
+        while numbers.is_alive():
+            pressPlayToStartLabel["text"] = "Loading"
+            root.after(333, root.update())
+            while pressPlayToStartLabel["text"] != "Loading...":
+                pressPlayToStartLabel["text"] += "."
+                root.after(333, root.update())
+        return
+
     def mainGameWindow():
-        """First do a API call, disable the menu and forget all the other window packs than pack the main game"""
-        #APIcall.ID_test()
+        """First do loading(), then disable the menu and forget all the other window packs than pack the main game"""
+        loading()
         emptyMenu = Menu(root)
         root.config(menu=emptyMenu)
         aboutPage.pack_forget()
@@ -237,16 +273,17 @@ def Game():
         with open('daily-hi-score.json', 'r') as f:
             dataDailyHighScores = json.load(f)
         try:
-            if score > min(dataAllTimeHighScores.values()) or score > min(dataDailyHighScores[str(date.today())]):
-                usernameLabel["text"] = "The character was: {}!\n" \
-                                        "Give username between 3 and 14 characters.".format(APIcall.hero_name())
+            if score > min(dataAllTimeHighScores.values()) or score > min(dataDailyHighScores[str(date.today())].values()):
+                usernameLabel["text"] = "The character was {}!".format(APIcall.hero_name())
                 usernameLabel.pack()
-                usernameEntry.pack()
+                giveUsernameLabel.pack()
+                usernameEntry.pack(padx=20, pady=10)
                 submitUsername.pack()
             else:
-                usernameLabel["text"] = "The character was: {}!\n" \
-                                        "Your score is not high enough to be in the high-score!".format(APIcall.hero_name())
+                usernameLabel["text"] = "The character was {}!".format(APIcall.hero_name())
+                giveUsernameLabel["text"] = "You score is not high enough to enter the high-scores."
                 usernameLabel.pack()
+                giveUsernameLabel.pack()
         except KeyError:
             pass
         winnersPage.pack(fill=BOTH, expand=True)
@@ -267,6 +304,8 @@ def Game():
         heroImage = Label(master=lossPage, image=photo)
         heroImage.image = photo
         heroImage.pack()
+        pointtext['text'] = 'The character was {}!'.format(APIcall.hero_name())
+        pointtext.pack()
         lossPage.pack(fill=BOTH, expand=True)
 
     #endregion
@@ -275,6 +314,7 @@ def Game():
 
     root = Tk()
     root.title("SuperHero The Game")
+    root.geometry('480x480')
     root.state('zoomed')
 
 
@@ -287,11 +327,17 @@ def Game():
     startScreen.pack(fill=BOTH, expand=True)
     playButton = Button(master=startScreen, text="PLAY", command=mainGameWindow, width=20, cursor="hand2", font='Fixedsys 18')
     quitButton = Button(master=startScreen, text="QUIT", command=root.quit, width=20, cursor="hand2", font='Fixedsys 18')
+    playButton.place(relx=0.995, rely=0.01, anchor=NE)
+    quitButton.place(relx=0.995, rely=0.085, anchor=NE)
+    startScreenLabel = Label(master=startScreen, text="Welcome to\nM.A.R.V.!", bg="black", fg="white", font='Fixedsys 18')
+    startScreenLabel.place(relx=0.945, rely=0.35, anchor=NE)
+    pressPlayToStartLabel = Label(master=startScreen, text="Press PLAY to start!", bg="black", fg="white", font='Fixedsys 18')
+    pressPlayToStartLabel.place(relx=0.89, rely=0.5, anchor=CENTER)
 
     # Build high score screen and attributes
     highScoreScreen = Frame(master=root, bg="black")
     highScoreScreen.pack(fill=BOTH, expand=True)
-    backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
+    backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
     backButtonScore.pack(side=BOTTOM, padx=20, pady=60)
     hiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
     hiScoreLabel.place(relx=0.25, rely=0.2, anchor=N)
@@ -301,7 +347,7 @@ def Game():
     # Build the how to play screen and attributes
     howToPlayScreen = Frame(master=root, bg="black")
     howToPlayScreen.pack(fill=BOTH, expand=True)
-    backButtonHowTo = Button(master=howToPlayScreen, text='HOME', command=buildStartScreen, font='Fixedsys')
+    backButtonHowTo = Button(master=howToPlayScreen, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
     text = Text(howToPlayScreen, bg="black", fg="white", font='Fixedsys')
     text.insert(INSERT,  "When you start to play the game you get 25 points. \n"
                         "You have 2 choices: You can either buy a hint or you can guess the character. \n"
@@ -320,27 +366,31 @@ def Game():
     mainGame = Frame(master=root, bg="black")
     mainGame.pack(fill=BOTH, expand=True)
     enterSuperHero = Entry(master=mainGame, font='Fixedsys 18')
-    enterSuperHero.place(relx=0.505, rely=0.5, anchor=W)
+    enterSuperHero.place(relx=0.5, rely=0.5, anchor=CENTER)
     labelEntryInput = Label(master=mainGame, bg="black", fg="white", text="ENTER A CHARACTER:", font='Fixedsys 18')
-    labelEntryInput.place(relx=0.495, rely=0.5, anchor =E)
+    labelEntryInput.place(relx=0.285, rely=0.5, anchor=CENTER)
     textGuessAnswer = Text(master=mainGame, fg="white", bg="black", width=50, height=16, wrap=WORD, yscrollcommand=set(), font='Fixedsys 12')
-    guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys')
-    giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys', command=lossWindow)
-    guessButton.pack()
-    giveUpButton.pack()
-    textGuessAnswer.pack()
+    guessButton = Button(master=mainGame, text="GUESS", command=guessButtonClicked, font='Fixedsys 14 bold', width=10, cursor="hand2")
+    guessButton.place(relx=0.715, rely=0.5, anchor=CENTER)
+    giveUpButton = Button(master=mainGame, text="I GIVE UP", font='Fixedsys 14 bold', command=lossWindow, width=10, cursor="hand2")
+    giveUpButton.place(relx=0.5, rely=0.8, anchor=CENTER)
+    textGuessAnswer.place(relx=0.5, rely=0.080, anchor=N)
     scoreLabel = Label(master=mainGame, bg="black", fg="white", text="SCORE: 25", font='Fixedsys 18')
     scoreLabel.place(relx=0.995, rely=0.005, anchor=NE)
     hintLabel = Label(master=mainGame, bg="black", fg="white", text="HINTS: {}".format(numberOfHintsLeft), font='Fixedsys 18')
     hintLabel.place(relx=0.18, rely=0.005, anchor=N)
+    displayLabel = Label(master=mainGame, bg="black", fg="white", text="DISPLAY:", font='Fixedsys 18')
+    displayLabel.place(relx=0.5, rely=0.005, anchor=N)
+    commentLabel = Label(master=mainGame, bg="black", fg="white", text="", font='Fixedsys')
+    commentLabel.place(relx=0.5, rely=0.45, anchor=CENTER)
     hint1Button = Button(master=mainGame, text="Give DESCRIPTION!", command=hintButton1, font='Fixedsys 12', width=45, cursor="hand2")
     hint2Button = Button(master=mainGame, text="Give amount LETTERS!", command=hintButton2, font='Fixedsys 12', width=45, cursor="hand2")
     hint3Button = Button(master=mainGame, text="Give FIRST LETTER of NAME!", command=hintButton3, font='Fixedsys 12', width=45, cursor="hand2")
     hint4Button = Button(master=mainGame, text="Give COMICS of CHARACTER appearance!", command=hintButton4, font='Fixedsys 12', width=45, cursor="hand2")
-    hint1Button.place(relx=0.18, rely=0.080, anchor=CENTER)
-    hint2Button.place(relx=0.18, rely=0.125, anchor=CENTER)
-    hint3Button.place(relx=0.18, rely=0.170, anchor=CENTER)
-    hint4Button.place(relx=0.18, rely=0.215, anchor=CENTER)
+    hint1Button.place(relx=0.18, rely=0.080, anchor=N)
+    hint2Button.place(relx=0.18, rely=0.125, anchor=N)
+    hint3Button.place(relx=0.18, rely=0.170, anchor=N)
+    hint4Button.place(relx=0.18, rely=0.215, anchor=N)
 
 
     # Build the about page and its attributes
@@ -371,34 +421,29 @@ def Game():
     frame.pack()
     downframe = Frame(master=root)
     downframe.pack(side=BOTTOM)
-    backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys')
+    backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
     backButtonAbout.place(relx=0.5, rely=0.88)
 
     # Build winners window and attributes
     winnersPage = Frame(master=root, bg="black")
-    labelWinMessage = Label(master=winnersPage, text='CONGRATIOLATIONS \n''You Win!\n', font='Fixedsys', fg= 'Yellow', bg='black')
-    backButtonWin = Button(master=winnersPage, text='PLAY AGIAN', fg='black', command=restartButton, height=2, width=40, cursor="hand2", font='Fixedsys')
-    backButtonWin.place(relx=0.6, rely=0.88)
-    backButtonWin = Button(master=winnersPage, text='QUIT', fg='black', command=root.quit, height=2, width=40, cursor="hand2", font='Fixedsys')
-    backButtonWin.place(relx=0.2, rely=0.88)
+    labelWinMessage = Label(master=winnersPage, text='CONGRATULATIONS!\nYOU WIN', font='Fixedsys 18', fg='Lime', bg='black')
+    backButtonWin = Button(master=winnersPage, text='RETURN TO HOME', fg='black', command=restartButton, height=1, width=20, cursor="hand2", font='Fixedsys 14 bold')
+    backButtonWin.place(relx=0.5, rely=0.9, anchor=CENTER)
     usernameEntry = Entry(master=winnersPage, font='Fixedsys')
-    submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_submit_for_all_time_highscore, font='Fixedsys')
-    usernameLabel = Label(master=winnersPage, bg="black", fg="white", text="", font='Fixedsys')
-
+    submitUsername = Button(master=winnersPage, text='SUBMIT', command=username_submit_for_all_time_highscore, font='Fixedsys', width=8, cursor="hand2")
+    usernameLabel = Label(master=winnersPage, bg="black", fg="yellow", text="", font='Fixedsys 18')
+    giveUsernameLabel = Label(master=winnersPage, bg="black", fg="white", text="Give username between 3 and 14 characters below and press submit to enter the high-scores!", font='Fixedsys')
     # Build the loss window and attributes
     lossPage = Frame(master=root, bg="black")
-    losetext = Label(master=lossPage ,text='YOU LOSE',fg='red',bg='black',font='Fixedsys 18')
+    losetext = Label(master=lossPage, text='GAME OVER!\nYOU LOSE', fg='red', bg='black', font='Fixedsys 18')
     losetext.pack(side=TOP)
     pointtext = Label(master=lossPage,
     text='The character was {}!'.format(APIcall.hero_name()),  # vul hier de functie van de character in
-    fg='white',bg='black',font='Fixedsys 18')
-    pointtext.pack(side=BOTTOM)
-    play_again_button_lose = Button(master=lossPage,text='QUIT',font='Fixedsys 12',command=root.quit,cursor="hand2",height=2, width=40)
-    play_again_button_lose.place(relx=0.6, rely=0.88)
+    fg='yellow',bg='black',font='Fixedsys 18')
     black_frame_lose = Frame(master=lossPage)
     black_frame_lose.pack(side=BOTTOM)
-    home_screen_button_lose = Button(master=lossPage,text='PLAY AGIAN', font='Fixedsys 12', command=restartButton, cursor="hand2", height=2, width=40)
-    home_screen_button_lose.place(relx=0.2, rely=0.88)
+    home_screen_button_lose = Button(master=lossPage,text='RETURN TO HOME', font='Fixedsys 14 bold', command=restartButton, cursor="hand2", height=1, width=20)
+    home_screen_button_lose.place(relx=0.5, rely=0.9, anchor=CENTER)
 
     # Add a Drop-down menu to the start screen
     menubar = Menu(root)
@@ -428,12 +473,12 @@ def Game():
 
 
 # Builds a process thread to run the game music in
-start_music = threading.Thread(target=music())
+start_music = threading.Thread(target=music)
 # Starts the music process thread
 start_music.start()
 
 # Builds a process thread to run the game in
-start_print = threading.Thread(target=Game())
+start_print = threading.Thread(target=Game)
 # Starts the game process thread
 start_print.start()
 # endregion
