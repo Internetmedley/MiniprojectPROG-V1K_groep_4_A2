@@ -105,7 +105,9 @@ def Game():
             commentLabel["text"] = "You don't have enough points to ask for a hint!"
             root.after(1000, commentRemove)
             return
+        textGuessAnswer.configure(state='normal')
         textGuessAnswer.insert(END, APIcall.hero_description() + '\n\n\t     -< scroll to go down >-\n\n')
+        textGuessAnswer.configure(state='disabled')
         hint1Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -119,7 +121,9 @@ def Game():
             commentLabel["text"] = "You don't have enough points to ask for a hint!"
             root.after(1000, commentRemove)
             return
+        textGuessAnswer.configure(state='normal')
         textGuessAnswer.insert(END, APIcall.hero_letters() + '\n\n\t     -< scroll to go down >-\n\n')
+        textGuessAnswer.configure(state='disabled')
         hint2Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -133,7 +137,9 @@ def Game():
             commentLabel["text"] = "You don't have enough points to ask for a hint!"
             root.after(1000, commentRemove)
             return
+        textGuessAnswer.configure(state='normal')
         textGuessAnswer.insert(END, APIcall.eerste_letter() + '\n\n\t     -< scroll to go down >-\n\n')
+        textGuessAnswer.configure(state='disabled')
         hint3Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -147,7 +153,9 @@ def Game():
             commentLabel["text"] = "You don't have enough points to ask for a hint!"
             root.after(1000, commentRemove)
             return
+        textGuessAnswer.configure(state='normal')
         textGuessAnswer.insert(END, APIcall.hero_comics() + '\n\n\t     -< scroll to go down >-\n\n')
+        textGuessAnswer.configure(state='disabled')
         hint4Button.destroy()
         score -= 3
         numberOfHintsLeft -= 1
@@ -159,13 +167,19 @@ def Game():
         global score
         if enterSuperHero.get().lower() == APIcall.hero_name().lower():
             commentLabel["text"] = "You gave the right awnser!"
-            root.after(677, winnersWindow)
+            giveUpButton.configure(command=lambda: None)
+            giveUpButton.configure(cursor='')
+            root.after(667, winnersWindow)
         else:
-            commentLabel["text"] = "Oh no you gave the wrong awnser!"
             score -= 1
             scoreLabel["text"] = "SCORE: {}".format(score)
+            if score >= 0:
+                commentLabel["text"] = "Oh no, you gave the wrong awnser!"
             if score == 0:
-                lossWindow()
+                commentLabel["text"] = "Oh no, you could not guess the character!"
+                guessButton.configure(command=lambda: None)
+                guessButton.configure(cursor='')
+                root.after(667, lossWindow)
             root.after(1000, commentRemove)
 
 
@@ -338,7 +352,7 @@ def Game():
     highScoreScreen = Frame(master=root, bg="black")
     highScoreScreen.pack(fill=BOTH, expand=True)
     backButtonScore = Button(master=highScoreScreen, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
-    backButtonScore.pack(side=BOTTOM, padx=20, pady=60)
+    backButtonScore.place(relx=0.5, rely=0.95, anchor=S)
     hiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
     hiScoreLabel.place(relx=0.25, rely=0.2, anchor=N)
     dailyHiScoreLabel = Label(master=highScoreScreen, bg="black", fg="white", text='', font='Fixedsys 18')
@@ -348,8 +362,8 @@ def Game():
     howToPlayScreen = Frame(master=root, bg="black")
     howToPlayScreen.pack(fill=BOTH, expand=True)
     backButtonHowTo = Button(master=howToPlayScreen, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
-    text = Text(howToPlayScreen, bg="black", fg="white", font='Fixedsys')
-    text.insert(INSERT,  "When you start to play the game you get 25 points. \n"
+    howToPlayText = Text(howToPlayScreen, bg="black", fg="white", font='Fixedsys', wrap=WORD)
+    howToPlayText.insert(INSERT,  "When you start to play the game you get 25 points. \n"
                         "You have 2 choices: You can either buy a hint or you can guess the character. \n"
                         "The goal of the game is that you guess the marvel Character with the help of tips that you can buy. \n"
                         "If you buy a hint, you loose 3 points. \n"
@@ -359,8 +373,9 @@ def Game():
                         "tip 3 : You get to see the marvel comics the character has played in. \n"
                         "tip 4 : You get to see how many characters there are in the name of the character. \n"
                         "If you guess the character wrong, you loose 1 point. \n")
-    text.pack()
-    backButtonHowTo.pack(padx=100, pady=20)
+    howToPlayText.configure(state='disabled')
+    howToPlayText.place(relx=0.5, rely=0.35, anchor=CENTER)
+    backButtonHowTo.place(relx=0.5, rely=0.95, anchor=S)
 
     # Build the main game window and build attributes
     mainGame = Frame(master=root, bg="black")
@@ -421,8 +436,8 @@ def Game():
     frame.pack()
     downframe = Frame(master=root)
     downframe.pack(side=BOTTOM)
-    backButtonAbout = Button(master=aboutPage, text="HOME", command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
-    backButtonAbout.place(relx=0.5, rely=0.88)
+    backButtonAbout = Button(master=aboutPage, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
+    backButtonAbout.place(relx=0.5, rely=0.95, anchor=S)
 
     # Build winners window and attributes
     winnersPage = Frame(master=root, bg="black")
