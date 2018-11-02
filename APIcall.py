@@ -6,7 +6,12 @@ import random
 
 
 def ID_test():
-    "geen arugment!!!"
+    """gaat zoeken naar een geschikte character ID door een random int te pakken tussen de ID's 1009146 en 1015035
+    en die op te vragen met requests, en als de json die gereturnt wordt
+    geen key 'description' heeft (of description is een lege string ''), dan loopt hij nog een keer totdat
+    hij er wel een gevonden heeft en dan stopt hij de json text in 'informatie.json'.
+    De 'slechte' character ID's - waar dus geen description in zit - zet hij in de text file 'nonexistentcharIDs.txt'
+    zodat hij die ID's onthoudt en skipt als hij die weer tegen komt."""
     loops = 0
 
     while True:
@@ -60,7 +65,9 @@ def ID_test():
 
 
 def hero_name():
-    "variabele informatie als argument"
+    """pakt de naam van de character uit 'informatie.json' en als er een '(' in zit haalt hij
+    alles wat tussen de haakjes zit weg mét de spatie die voor het eerste haakje staat.
+    Dan returnt hij de naam als string."""
     with open('informatie.json', 'r') as f:
         info = json.load(f)
         naam = info['data']['results'][0]['name']
@@ -71,41 +78,32 @@ def hero_name():
 
 
 def hero_letters():
-    "returnt de hint hoeveel letters de naam bevat"
-    with open('informatie.json', 'r') as f:
-        info = json.load(f)
-        naam = info['data']['results'][0]['name']
-        if '(' in naam:
-            naam = naam.replace(naam[naam.index('(') - 1:], '')
-            hint = 'The name contains {} letters.'.format(len(naam))
-            return hint
-        else:
-            hint = 'The name contains {} letters.'.format(len(naam))
-            return hint
+    """returnt het aantal letters van de naam die uit hero_name() komt."""
+    naam = hero_name()
+    lengte = 'The name contains {} letters.'.format(len(naam))
+    return lengte
 
 
 def hero_description():
-    "variabele informatie als argument en haalt naam uit de description"
+    """haalt de character naam uit hero_name() en filter de description gehaalt uit de API
+    zodat de naam niet in de description zal zitten (anders zou deze hint overpowered zijn)."""
     with open('informatie.json', 'r') as f:
         info = json.load(f)
-        naam = info['data']['results'][0]['name']
-        if '(' in naam:
-            naam = naam.replace(naam[naam.index('(') - 1:], '')
-        hint = info['data']['results'][0]['description'].replace(naam, '*****')
-        return hint
+        naam = hero_name()
+        description = info['data']['results'][0]['description'].replace(naam, '*****')
+        return description
 
 
 def eerste_letter():
-    ":returns de eerste letter van naam"
+    """returnt de eerste letter van de character naam."""
     with open('informatie.json', 'r') as f:
         info = json.load(f)
-        naam = "The first letter is a '{}'.".format(info['data']['results'][0]['name'][0])
-        return naam
+        naamEersteLetter = "The first letter is a '{}'.".format(info['data']['results'][0]['name'][0])
+        return naamEersteLetter
 
 
 def hero_comics():
-    ":returns de eerste letter van naam"
-
+    """"returnt de eerste letter van de character naam en stopt die in de string 'comics'."""
     comics = ''
     with open('informatie.json', 'r') as f:
         info = json.load(f)
@@ -114,17 +112,10 @@ def hero_comics():
         return comics
 
 
-def hero_image_URL():
+def hero_image_url():
+    """returnt de URL van het .jpg bestand uit informatie.json """
     with open('informatie.json', 'r') as f:
         info = json.load(f)
-        imgURL = info['data']['results'][0]['thumbnail']['path'] + '/portrait_uncanny.' + info['data']['results'][0]['thumbnail'][
-            'extension']
-        return imgURL
-
-# informatie = ID_test()
-# print(hero_description(informatie))
-# print(hero_letters(informatie))
-# print(eerste_letter(informatie))
-
-
-# print(json.dumps(informatie, sort_keys=True, indent=4))
+        imgurl = info['data']['results'][0]['thumbnail']['path'] + '/portrait_uncanny.' + \
+                 info['data']['results'][0]['thumbnail']['extension']
+        return imgurl

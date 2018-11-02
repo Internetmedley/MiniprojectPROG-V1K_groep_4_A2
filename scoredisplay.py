@@ -39,7 +39,7 @@ def high_score_check(score, username):
 
 
 def high_score_print():
-    "print de high-scorelijst"
+    """print de geformatteerde daily high-scorelijst gehaald uit 'daily-hi-score.json'."""
     with open('hi-scores.json', 'r') as f:
         data = json.load(f)
 
@@ -49,8 +49,9 @@ def high_score_print():
 
     return hiscore
 
+
 def daily_high_scores_print():
-    """print de daily high-scorelijst"""
+    """print de geformatteerde daily high-scorelijst gehaald uit 'daily-hi-score.json'."""
     vandaag = str(date.today())
     with open('daily-hi-score.json', 'r') as f:
         dailyDict = json.load(f)

@@ -30,7 +30,7 @@ def music():
     mixer.music.play(-1)
 
 
-def Game():
+def main_game():
     """Build the al the windows and attributes"""
 
     # region Buttons
@@ -54,6 +54,7 @@ def Game():
                 giveUsernameLabel["text"] = "That username is already being used, please try another one."
                 return
             else:
+                giveUsernameLabel["text"] = "Your name has succesfully been submitted to the high-scores."
                 submitUsername.destroy()
                 dictInDailyDictWithoutDate.update({usernameEntry.get(): score})
 
@@ -76,10 +77,11 @@ def Game():
             elif len(usernameEntry.get()) < 3:
                 giveUsernameLabel["text"] = "That username is too short, please try again."
                 return
-            elif usernameEntry.get() in allTimeDict.keys(): # anders werkt het niet met de dictionary en values
+            elif usernameEntry.get() in allTimeDict.keys():         # anders werkt het niet met de dictionary en values
                 giveUsernameLabel["text"] = "That username is already being used, please try another one."
                 return
             else:
+                giveUsernameLabel["text"] = "Your name has succesfully been submitted to the high-scores."
                 submitUsername.destroy()
                 with open('daily-hi-score.json', 'w') as f:
                     json.dump({vandaag: {usernameEntry.get(): score, "PLAYER 1": 0, "PLAYER 2": 0, "PLAYER 3": 0, "PLAYER 4": 0}}, f)
@@ -257,7 +259,7 @@ def Game():
         return
 
     def mainGameWindow():
-        """First do loading(), then disable the menu and forget all the other window packs than pack the main game"""
+        """First do loading(), then disable the menu and forget all the other window packs, then pack the main game"""
         loading()
         emptyMenu = Menu(root)
         root.config(menu=emptyMenu)
@@ -285,7 +287,7 @@ def Game():
         mainGame.pack_forget()
         aboutPage.pack_forget()
         labelWinMessage.pack()
-        image_url = APIcall.hero_image_URL()
+        image_url = APIcall.hero_image_url()
         u = urlopen(image_url)
         raw_data = u.read()
         u.close()
@@ -321,7 +323,7 @@ def Game():
         mainGame.pack_forget()
         aboutPage.pack_forget()
         labelWinMessage.pack_forget()
-        image_url = APIcall.hero_image_URL()
+        image_url = APIcall.hero_image_url()
         u = urlopen(image_url)
         raw_data = u.read()
         u.close()
@@ -376,16 +378,16 @@ def Game():
     howToPlayScreen.pack(fill=BOTH, expand=True)
     backButtonHowTo = Button(master=howToPlayScreen, text='HOME', command=buildStartScreen, font='Fixedsys 14 bold', width=8, cursor="hand2")
     howToPlayText = Text(howToPlayScreen, bg="black", fg="white", font='Fixedsys', wrap=WORD)
-    howToPlayText.insert(INSERT,  "When you start to play the game you get 25 points. \n"
+    howToPlayText.insert(INSERT,  "You start the game with 25 points. \n"
                         "You have 2 choices: You can either buy a hint or you can guess the character. \n"
-                        "The goal of the game is that you guess the marvel Character with the help of tips that you can buy. \n"
-                        "If you buy a hint, you loose 3 points. \n"
+                        "The goal of the game is that you guess the marvel character with the help of tips that you can buy. \n"
+                        "If you buy a hint, you lose 3 points. \n"
                         "There are 4 different hints you can choose from. \n"
                         "Tip 1 : You get a small description about the character. \n"
                         "tip 2 : You get the 1st letter of the name of the character. \n"
-                        "tip 3 : You get to see the marvel comics the character has played in. \n"
-                        "tip 4 : You get to see how many characters there are in the name of the character. \n"
-                        "If you guess the character wrong, you loose 1 point. \n")
+                        "tip 3 : You get to see the marvel comics the character has appeared in. \n"
+                        "tip 4 : You get to see how many letters there are in the name of the character. \n"
+                        "If you guess the character wrong, you lose 1 point. \n")
     howToPlayText.configure(state='disabled')
     howToPlayText.place(relx=0.5, rely=0.35, anchor=CENTER)
     backButtonHowTo.place(relx=0.5, rely=0.95, anchor=S)
@@ -428,13 +430,13 @@ def Game():
     labelframe1 = Label(master=aboutPage,
                        text='Our opinions going into this project: \n'
                        '\n'
-                       'This game was made by a copple of students, studying at the HU in Utrecht.\n'
-                       'We are five boys around the ages of 20 hoping to become an experienced programmer\n'
-                       '"Tobias S: I realy enjoyed making this game even thought sometimes the error messages got the better of me."\n'
-                       '"Remy d B: When we started, I did not know if it would be fun but after working on it with my team I started to enjoy this project a lot more."\n'
-                       '"Jesse B: Starting the project was quite a struggle because I fas far behind with my knowledge but I have caught up for and thanks to my team, so I wanted to thank them again."\n'
-                       '"Ramon P: I had difficulty visualising the project but after all the hard work we put I had a lot of fun."\n'
-                       '"Jelle-Jetze H: I had difficulty taking the lead as projectleader but after all backup I received from my team I got a lot more confident in my role."\n',
+                       'This game was made by a couple of students studying at the HU in Utrecht.\n'
+                       'We are five guys around the age of 20 hoping to become experienced programmers.\n'
+                       '"Tobias S: I really enjoyed making this game even though sometimes the error messages got the better of me."\n'
+                       '"Remy d B: When we started, I did not know if it would be fun but after working on it with my team I started enjoying this project a lot more."\n'
+                       '"Jesse B: Starting the project was quite a struggle because I was far behind with my knowledge but I have caught up thanks to my team, so I wanted to thank them again."\n'
+                       '"Ramon P: I had difficulty visualising the project but after all the hard work we put in I had a lot of fun."\n'
+                       '"Jelle-Jetze H: I had difficulty taking the lead as projectleader but after all the backup I received from my team I got a lot more confident in my role."\n',
                        fg= 'white',bg='black', font='Fixedsys',width= 100000,height=10)
     labelframe1.pack(side=TOP)
     labelframe1 = Label(master=aboutPage,
@@ -466,11 +468,11 @@ def Game():
     losetext = Label(master=lossPage, text='GAME OVER!\nYOU LOSE', fg='red', bg='black', font='Fixedsys 18')
     losetext.pack(side=TOP)
     pointtext = Label(master=lossPage,
-    text='The character was {}!'.format(APIcall.hero_name()),  # vul hier de functie van de character in
+    text='',  # vul hier de functie van de character in
     fg='yellow',bg='black',font='Fixedsys 18')
     black_frame_lose = Frame(master=lossPage)
     black_frame_lose.pack(side=BOTTOM)
-    home_screen_button_lose = Button(master=lossPage,text='RETURN TO HOME', font='Fixedsys 14 bold', command=restartButton, cursor="hand2", height=1, width=20)
+    home_screen_button_lose = Button(master=lossPage, text='RETURN TO HOME', font='Fixedsys 14 bold', command=restartButton, cursor="hand2", height=1, width=20)
     home_screen_button_lose.place(relx=0.5, rely=0.9, anchor=CENTER)
 
     copyRightLabel = Label(master=root, bg="black", fg="white", font='Fixedsys 14', text='©Taakstrafmannen 2018')
@@ -509,7 +511,7 @@ start_music = threading.Thread(target=music)
 start_music.start()
 
 # Builds a process thread to run the game in
-start_print = threading.Thread(target=Game)
+start_print = threading.Thread(target=main_game)
 # Starts the game process thread
 start_print.start()
 # endregion
