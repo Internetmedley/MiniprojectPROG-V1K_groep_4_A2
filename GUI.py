@@ -76,7 +76,7 @@ def Game():
             elif len(usernameEntry.get()) < 3:
                 giveUsernameLabel["text"] = "That username is too short, please try again."
                 return
-            elif usernameEntry.get() in allTimeDict.keys():                        # anders werkt het niet met de dictionary en values
+            elif usernameEntry.get() in allTimeDict.keys(): # anders werkt het niet met de dictionary en values
                 giveUsernameLabel["text"] = "That username is already being used, please try another one."
                 return
             else:
@@ -339,7 +339,7 @@ def Game():
     #region tkinter Root
 
     root = Tk()
-    root.title("SuperHero The Game")
+    root.title("M.A.R.V.")
     root.geometry('480x480')
     root.state('zoomed')
 
