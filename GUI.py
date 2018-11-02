@@ -54,6 +54,7 @@ def Game():
                 giveUsernameLabel["text"] = "That username is already being used, please try another one."
                 return
             else:
+                submitUsername.destroy()
                 dictInDailyDictWithoutDate.update({usernameEntry.get(): score})
 
                 if score > min(dictInDailyDictWithoutDate.values()):
@@ -69,11 +70,22 @@ def Game():
                     with open('daily-hi-score.json', 'w') as f:
                         json.dump({vandaag: dictInDailyDictWithoutDate}, f)
         except KeyError:
-            with open('daily-hi-score.json', 'w') as f:
-                json.dump({vandaag: {usernameEntry.get(): score, "PLAYER 1": 0, "PLAYER 2": 0, "PLAYER 3": 0, "PLAYER 4": 0}}, f)
+            if len(usernameEntry.get()) > 14:
+                giveUsernameLabel["text"] = "That username is too long, please try again."
+                return
+            elif len(usernameEntry.get()) < 3:
+                giveUsernameLabel["text"] = "That username is too short, please try again."
+                return
+            elif usernameEntry.get() in allTimeDict.keys():                        # anders werkt het niet met de dictionary en values
+                giveUsernameLabel["text"] = "That username is already being used, please try another one."
+                return
+            else:
+                submitUsername.destroy()
+                with open('daily-hi-score.json', 'w') as f:
+                    json.dump({vandaag: {usernameEntry.get(): score, "PLAYER 1": 0, "PLAYER 2": 0, "PLAYER 3": 0, "PLAYER 4": 0}}, f)
 
         allTimeDict.update({usernameEntry.get(): score})
-        submitUsername.destroy()
+
 
         if score > min(allTimeDict.values()):
             lijstKeysAllTimeHighScore = (sorted(allTimeDict, key=allTimeDict.__getitem__, reverse=True))       # maakt lijst van keys van reverse gesorteerde values
@@ -348,6 +360,7 @@ def Game():
     pressPlayToStartLabel = Label(master=startScreen, text="Press PLAY to start!", bg="black", fg="white", font='Fixedsys 18')
     pressPlayToStartLabel.place(relx=0.89, rely=0.5, anchor=CENTER)
 
+
     # Build high score screen and attributes
     highScoreScreen = Frame(master=root, bg="black")
     highScoreScreen.pack(fill=BOTH, expand=True)
@@ -459,6 +472,9 @@ def Game():
     black_frame_lose.pack(side=BOTTOM)
     home_screen_button_lose = Button(master=lossPage,text='RETURN TO HOME', font='Fixedsys 14 bold', command=restartButton, cursor="hand2", height=1, width=20)
     home_screen_button_lose.place(relx=0.5, rely=0.9, anchor=CENTER)
+
+    copyRightLabel = Label(master=root, bg="black", fg="white", font='Fixedsys 14', text='©Taakstrafmannen 2018')
+    copyRightLabel.place(relx=0.995, rely=0.99, anchor=SE)
 
     # Add a Drop-down menu to the start screen
     menubar = Menu(root)
