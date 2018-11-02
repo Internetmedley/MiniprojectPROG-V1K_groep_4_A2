@@ -11,7 +11,8 @@ def ID_test():
     geen key 'description' heeft (of description is een lege string ''), dan loopt hij nog een keer totdat
     hij er wel een gevonden heeft en dan stopt hij de json text in 'informatie.json'.
     De 'slechte' character ID's - waar dus geen description in zit - zet hij in de text file 'nonexistentcharIDs.txt'
-    zodat hij die ID's onthoudt en skipt als hij die weer tegen komt."""
+    zodat hij die ID's onthoudt en skipt als hij die weer tegen komt zodat het programma sneller loopt en hij minder
+    onnodige API requests hoeft te versturen naar Marvel naar verloop van tijd."""
     loops = 0
 
     while True:
