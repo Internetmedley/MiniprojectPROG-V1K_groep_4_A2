@@ -41,7 +41,7 @@ def ID_test():
         try:
             jsontext['data']['results'][0]['description']
 
-            if jsontext['data']['results'][0]['description'] == "":
+            if jsontext['data']['results'][0]['description'] == "" or jsontext['data']['results'][0]['description'] == " ":
                 infile = open('nonexistentcharIDs.txt', 'a')
                 infile.write(str(charID) + '\n')
                 infile.close()
